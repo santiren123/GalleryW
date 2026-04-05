@@ -110,6 +110,8 @@ body {
     top: calc(10vh + 30px); /* 露出上面卡片 30px 的边缘 */
     background-color: var(--card-bg-2); 
     z-index: 2; 
+     background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+    url('images/japan.jpg');
 }
 .card-3 { 
     top: calc(10vh + 60px); /*每加一个卡片+30px*/
