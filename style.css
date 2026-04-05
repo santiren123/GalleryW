@@ -105,6 +105,7 @@ body {
     z-index: 1;
     background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
     url('images/qinghai0.jpg');
+    background-size:102%;
 }
 .card-2 { 
     top: calc(10vh + 30px); /* 露出上面卡片 30px 的边缘 */
@@ -112,6 +113,7 @@ body {
     z-index: 2; 
      background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
     url('images/japan1.jpg');
+    background-size:102%;
 }
 .card-3 { 
     top: calc(14vh + 60px); /*每加一个卡片+30px*/
@@ -119,6 +121,7 @@ body {
     z-index: 3; 
     background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
     url('images/chongqing1.jpg');
+    background-size:102%;
 }
 .card-4 { 
     top: calc(14vh + 90px); /*每加一个卡片+30px*/
@@ -171,7 +174,7 @@ body {
 }
 
 .project-card:hover .btn-view {
-    transform: translateX(10px);
+    transform: translateX(15px);
 }
 
 
