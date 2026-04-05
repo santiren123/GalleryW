@@ -56,7 +56,7 @@ body {
 
 /* --- 卡片底色（你可以替换成 background-image: url('你的照片路径.jpg')） --- */
 .card-1 { 
-    background-color: #111; 
+    background-image: "https://i.ibb.co/S4FZ592X/DSC-3853-2.jpg"; 
     color: #fff; 
 }
 .card-2 { 
