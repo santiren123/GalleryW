@@ -3,92 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will's Travel Plog</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Will's Flow Plog</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            /* 隐藏最外层的滚动条，让视觉更纯粹 */
+            overflow: hidden; 
+        }
+
+        /* --- 核心魔法：滚动容器 --- */
+        .scroll-container {
+            height: 100vh; /* 容器高度等于 100% 屏幕高度 */
+            overflow-y: scroll; /* 允许 Y 轴滚动 */
+            
+            /* CSS 滚动捕捉的灵魂 */
+            scroll-snap-type: y mandatory; 
+            
+            /* 隐藏容器的滚动条 (兼容各种浏览器) */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* IE and Edge */
+        }
+        .scroll-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari and Opera */
+        }
+
+        /* --- 每一张全屏卡片 --- */
+        .card {
+            height: 100vh; /* 每张卡片占满整个屏幕 */
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            
+            /* 核心魔法：滚动停止时，卡片顶部对齐屏幕顶部 */
+            scroll-snap-align: start; 
+            
+            /* 确保持续滚动时不会停在卡片中间 */
+            scroll-snap-stop: always; 
+            
+            position: relative;
+        }
+
+        /* 随便调几个高级的底色，之后你可以换成你的摄影大图做 background-image */
+        .card-1 { background-color: #111; color: #fff; }
+        .card-2 { background-color: #f5f5f7; color: #1d1d1f; }
+        .card-3 { background-color: #2c2c2e; color: #fff; }
+
+        /* 卡片内的文字排版 */
+        h1 {
+            font-size: 5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        p {
+            font-size: 1.5rem;
+            opacity: 0.8;
+            font-weight: 400;
+            max-width: 600px;
+        }
+
+        .gear-tag {
+            position: absolute;
+            bottom: 2rem;
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            opacity: 0.5;
+        }
+    </style>
 </head>
 <body>
-    <header class="navbar">
-        <div class="logo">/WILL</div>
-        <nav>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#qinghai">QINGHAI</a></li>
-                <li><a href="#japan">JAPAN</a></li>
-                <li><a href="#chongqing">CHONGQING</a></li>
-                <li><a href="#lijiang">LIJIANG</a></li>
-                <li><a href="#yiheyuan">YIHEYUAN</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li><a href="#about">About</a></li>
-            </ul>
-        </nav>
-    </header>
 
-    <main>
-        <section id="home" class="hero">
-            <h1>Will's Travel Plog</h1>
-            <div class="scroll-indicator">
-                <p>SCROLL TO START</p>
-                <div class="line"></div>
-            </div>
-            <p class="version-note">Finalizing. Current version for preview only.</p>
+    <div class="scroll-container">
+        
+        <section class="card card-1">
+            <h1>Qinghai</h1>
+            <p>Ta'er Temple, Chaka, Qunjia.</p>
+            <div class="gear-tag">SHOT ON CANON EOS R5</div>
         </section>
 
-        <section class="section-container trips">
-            <h2 class="section-title">TRIPS</h2>
-            <div class="trip-cards">
-                <article class="card">
-                    <div class="card-content">
-                        <h3>Qinghai (24Q2)</h3>
-                        <p>Check out experience and photos from Ta'er Temple, Chaka, Qunjia</p>
-                        <span class="camera-gear">SHOT ON CANON EOS R5</span>
-                        <a href="#" class="btn-view">View</a>
-                    </div>
-                </article>
-                
-                <article class="card">
-                    <div class="card-content">
-                        <h3>Japan (25Q2)</h3>
-                        <p>Check out experience and photos taken from Tokyo, Fuji Kawaguchiko, Kyoto and Osaka</p>
-                        <span class="camera-gear">SHOT ON NIKON Z9</span>
-                        <a href="#" class="btn-view">View</a>
-                    </div>
-                </article>
-            </div>
+        <section class="card card-2">
+            <h1>Japan</h1>
+            <p>Tokyo, Fuji Kawaguchiko, Kyoto and Osaka.</p>
+            <div class="gear-tag">SHOT ON NIKON Z9</div>
         </section>
 
-        <section class="section-container mini-plogs">
-            <h2 class="section-title">MINI PLOGS</h2>
-            <div class="grid-container">
-                <div class="grid-item">
-                    <h4>ChongQing (25Q2)</h4>
-                    <p>Check Out experience and photos @ Yuzhong, Chongqing, China</p>
-                </div>
-                <div class="grid-item">
-                    <h4>Lijiang (25Q4)</h4>
-                    <p>Check Out experience and photos @ Yulong Snow Mountain, Yunnan, China</p>
-                </div>
-                <div class="grid-item">
-                    <h4>YiHeYuan (25Q2)</h4>
-                    <p>Check Out experience and photos @ YiHeYuan, Beijing, China</p>
-                </div>
-            </div>
+        <section class="card card-3">
+            <h1>YiHeYuan</h1>
+            <p>A tranquil moment in Beijing.</p>
+            <div class="gear-tag">TO BE CONTINUED</div>
         </section>
 
-        <section class="section-container tbc">
-            <h2>TO BE CONTINUED...</h2>
-            <p class="destinations">TRMOSO | ZERMATT | SVALBARD | ANCHORAGE | KASHGAR Prefecture</p>
-        </section>
-    </main>
+    </div>
 
-    <footer>
-        <div class="footer-content">
-            <a href="#">Contact</a>
-            <a href="#">Instagram</a>
-        </div>
-        <div class="legal">
-            <p>V1.2(2-25-2026) Will's Travel Plog. All Rights Reserved.©2023-2026</p>
-            <a href="#" class="report">Report abuse</a>
-        </div>
-    </footer>
 </body>
 </html>
