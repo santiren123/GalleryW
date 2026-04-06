@@ -35,7 +35,7 @@ body {
 
 /* --- 页面骨架 --- */
 .container {
-    max-width: 1200px;
+    max-width: 87vw;
     margin: 0 auto;
     padding: 0 5%;
 }
