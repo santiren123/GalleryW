@@ -44,6 +44,7 @@ html, body {
     /* 开启横向滚动并隐藏丑陋的滚动条 */
     overflow-x: auto;
     scrollbar-width: none; /* Firefox */
+    touch-action: pan-x;
 }
 
 .gallery-track::-webkit-scrollbar {
@@ -110,7 +111,7 @@ body::after {
     bottom: 2rem;
     right: 3rem;
     color: rgba(255, 255, 255, 0.4); 
-    font-size: 1rem;
+    font-size: 0.88rem;
     letter-spacing: 0.2em;
     font-weight: 600;
     pointer-events: none; 
@@ -130,7 +131,7 @@ body::after {
     .btn-back {
         top: 1.5rem;
         left: 1.5rem;
-        font-size: 0.75rem;
+        font-size: 1rem;
         opacity: 0.8; 
     }
 
