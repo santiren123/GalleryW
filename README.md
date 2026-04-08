@@ -4,7 +4,7 @@ This is an alternate version of the classic Galleryw.net, which will expire in 2
 
 This Website is powered by github, written by William & Google Gemini
 
-Change Log V1.0
+Change Log V2.0 Beta
 
 -Added Home Page
 -Added Subpage Qinghai
