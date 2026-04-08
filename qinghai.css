@@ -31,30 +31,23 @@ html, body {
     opacity: 1;
 }
 
-/* --- 3. 核心轨道：横向滚动容器 --- */
+/* --- 3. 核心轨道：极简自由横向滚动 --- */
 .gallery-track {
     display: flex;
     align-items: center; 
     height: 100vh;
-    gap: 10vw; /* 两张全景图之间的间距 */
+    
+    /* 直接用 padding 留出首尾的呼吸感，干脆利落！ */
+    padding: 0 15vw; 
+    gap: 8vw; /* 照片间距 */
     
     /* 开启横向滚动并隐藏丑陋的滚动条 */
     overflow-x: auto;
     scrollbar-width: none; /* Firefox */
-    
-    /* 横向滚动的磁吸魔法 */
-    scroll-snap-type: x mandatory; 
 }
 
 .gallery-track::-webkit-scrollbar {
     display: none; /* Chrome / Safari 隐藏滚动条 */
-}
-
-/* 🎯 【修复点】：透明实体砖头，强行撑开左右留白 */
-.gallery-track::before,
-.gallery-track::after {
-    content: ''; 
-    flex: 0 0 25vw; /* 电脑端制造 25% 宽度的留白 */
 }
 
 /* --- 4. 每一张全景图的容器 --- */
@@ -62,8 +55,7 @@ html, body {
     height: 75vh;
     flex: 0 0 auto; 
     position: relative;
-    /* 核心魔法：滑动停止时，这张图的中心对齐屏幕的中心 */
-    scroll-snap-align: center; 
+    /* 彻底删除了所有强制吸附的代码，回归自由 */
 }
 
 /* 照片本体样式 */
@@ -111,7 +103,7 @@ html, body {
     opacity: 0.5;
 }
 
-/* 🎯 【修复点】：把滚动提示交接给 body，避免和留白砖头打架 */
+/* 右下角滑动提示 */
 body::after {
     content: 'SCROLL TO EXPLORE →';
     position: fixed;
@@ -143,8 +135,8 @@ body::after {
     }
 
     .gallery-track {
-        /* 🎯 【修复点】：删掉多余的 padding */
-        gap: 8vw; 
+        padding: 0 10vw; /* 手机端留白稍微小一点 */
+        gap: 5vw; 
     }
 
     .pano-item {
@@ -154,33 +146,3 @@ body::after {
     .pano-item img {
         border-radius: 4px; 
     }
-
-    .pano-caption {
-        margin-top: 1rem;
-        flex-direction: column; 
-        align-items: flex-start;
-        gap: 0.4rem; 
-    }
-
-    .pano-caption h3 {
-        font-size: 1.25rem; 
-    }
-
-    .pano-caption p {
-        font-size: 0.7rem; 
-    }
-
-    .end-credits {
-        width: 80vw; 
-    }
-
-    .end-credits h2 {
-        font-size: 1.5rem;
-    }
-
-    /* 🎯 【修复点】：手机端的留白砖头 */
-    .gallery-track::before,
-    .gallery-track::after {
-        flex: 0 0 10vw; 
-    }
-} /* 🎯 【修复点】：补上最后一个大括号！ */
