@@ -1,9 +1,8 @@
-
 /* --- 1. 基础重置与暗黑背景 --- */
 html, body {
     margin: 0;
     padding: 0;
-    background-color: #050505; /* 比主页更深邃的纯黑，突出照片发光感 */
+    background-color: #050505; 
     color: #f5f5f5;
     font-family: 'Manrope', sans-serif;
     
@@ -35,11 +34,8 @@ html, body {
 /* --- 3. 核心轨道：横向滚动容器 --- */
 .gallery-track {
     display: flex;
-    align-items: center; /* 让所有照片在垂直方向居中 */
+    align-items: center; 
     height: 100vh;
-    
-    /* 首尾留白，确保第一张和最后一张也能居中 */
-   
     gap: 10vw; /* 两张全景图之间的间距 */
     
     /* 开启横向滚动并隐藏丑陋的滚动条 */
@@ -48,22 +44,24 @@ html, body {
     
     /* 横向滚动的磁吸魔法 */
     scroll-snap-type: x mandatory; 
-
-   
 }
 
 .gallery-track::-webkit-scrollbar {
     display: none; /* Chrome / Safari 隐藏滚动条 */
 }
 
+/* 🎯 【修复点】：透明实体砖头，强行撑开左右留白 */
+.gallery-track::before,
+.gallery-track::after {
+    content: ''; 
+    flex: 0 0 25vw; /* 电脑端制造 25% 宽度的留白 */
+}
+
 /* --- 4. 每一张全景图的容器 --- */
 .pano-item {
-    /* 重点：不限制宽度，让高度定死在 75vh，宽度根据全景图比例自然展开 */
     height: 75vh;
     flex: 0 0 auto; 
-    
     position: relative;
-    
     /* 核心魔法：滑动停止时，这张图的中心对齐屏幕的中心 */
     scroll-snap-align: center; 
 }
@@ -71,10 +69,10 @@ html, body {
 /* 照片本体样式 */
 .pano-item img {
     height: 100%;
-    width: auto; /* 高度定死，宽度自动等比缩放 */
-    border-radius: 8px; /* 极小的圆角，更像画框 */
+    width: auto; 
+    border-radius: 8px; 
     object-fit: cover;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.8); /* 史诗感阴影 */
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8); 
 }
 
 /* --- 5. 照片下方的参数排版 --- */
@@ -105,7 +103,7 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 300px; /* 给结尾文字一个固定宽度 */
+    width: 300px; 
 }
 
 .end-credits h2 {
@@ -113,20 +111,19 @@ html, body {
     opacity: 0.5;
 }
 
-/* 在屏幕右下角加一个若隐若现的提示 */
-.gallery-track::after {
+/* 🎯 【修复点】：把滚动提示交接给 body，避免和留白砖头打架 */
+body::after {
     content: 'SCROLL TO EXPLORE →';
     position: fixed;
     bottom: 2rem;
     right: 3rem;
-    color: rgba(255, 255, 255, 0.4); /* 半透明高级感 */
+    color: rgba(255, 255, 255, 0.4); 
     font-size: 0.75rem;
     letter-spacing: 0.2em;
     font-weight: 600;
-    pointer-events: none; /* 防止挡住鼠标点击 */
-    
-    /* 呼吸灯呼吸动画 */
+    pointer-events: none; 
     animation: pulse 2s infinite ease-in-out;
+    z-index: 10;
 }
 
 @keyframes pulse {
@@ -134,63 +131,45 @@ html, body {
     50% { opacity: 1; transform: translateX(5px); }
     100% { opacity: 0.2; transform: translateX(0); }
 }
-.gallery-track::before,
-.gallery-track::after {
-    content: ''; /* 必须有 content 才能生成实体 */
-    
-    /* flex: 0 0 宽度;  意思是：绝对不许缩小，定死宽度！*/
-    flex: 0 0 25vw; /* 电脑端制造 25% 屏幕宽度的透明空间 */
-}
 
-}
-/* --- 7. 手机端响应式终极适配 (专为 iPhone/安卓 竖屏优化) --- */
+/* --- 7. 手机端响应式终极适配 --- */
 @media (max-width: 768px) {
     
-    /* 1. 返回按钮：稍微缩小并调整位置，防误触，不挡画面 */
     .btn-back {
         top: 1.5rem;
         left: 1.5rem;
         font-size: 0.75rem;
-        opacity: 0.8; /* 手机上默认稍微亮一点，方便找到 */
+        opacity: 0.8; 
     }
 
-    /* 2. 核心轨道：缩小首尾留白和图片间距 */
     .gallery-track {
-        /* 手机上不需要 50vw 那么夸张的居中留白，10vw 刚好能露出一点边缘暗示 */
-        padding: 0 10vw; 
+        /* 🎯 【修复点】：删掉多余的 padding */
         gap: 8vw; 
     }
 
-    /* 3. 全景图卡片：高度压缩，拯救竖屏比例 */
     .pano-item {
-        /* 【核心调校】：把高度从 75vh 降到 50vh 左右。
-           这样图片依然很大，但底部能留出足够的空间显示文字，不用上下滑 */
         height: 50vh; 
     }
 
     .pano-item img {
-        /* 手机屏幕小，圆角稍微收敛一点，显得更精致 */
         border-radius: 4px; 
     }
 
-    /* 4. 文字排版：从“左右分布”改成“上下叠放” */
     .pano-caption {
         margin-top: 1rem;
-        /* 手机屏幕窄，强行左右排版文字会打架，直接改为列排版 (上下) */
         flex-direction: column; 
         align-items: flex-start;
-        gap: 0.4rem; /* 标题和参数之间的微小间距 */
+        gap: 0.4rem; 
     }
 
     .pano-caption h3 {
-        font-size: 1.25rem; /* 标题稍微缩小 */
+        font-size: 1.25rem; 
     }
 
     .pano-caption p {
-        font-size: 0.7rem; /* 参数字体缩小，保持高级感 */
+        font-size: 0.7rem; 
     }
 
-    /* 5. 结尾致谢卡片 */
     .end-credits {
         width: 80vw; 
     }
@@ -198,7 +177,10 @@ html, body {
     .end-credits h2 {
         font-size: 1.5rem;
     }
+
+    /* 🎯 【修复点】：手机端的留白砖头 */
     .gallery-track::before,
     .gallery-track::after {
-        flex: 0 0 10vw; /* 手机端只需要 10% 宽度的透明空间 */
-}
+        flex: 0 0 10vw; 
+    }
+} /* 🎯 【修复点】：补上最后一个大括号！ */
