@@ -96,7 +96,7 @@
         // 2. 如果意图是【上下划】
         // 彻底劫持！防止触发下拉刷新，并把纵向动能转给横向
         e.preventDefault(); 
-        track.scrollLeft += diffY;
+        track.scrollLeft += diffY*2;
         
         // 只更新 Y 轴起点，让拖拽始终跟手
         startY = currentY; 
