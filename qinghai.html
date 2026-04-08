@@ -1,1 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qinghai Panoramas | Will's Photography</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="qinghai.css">
+</head>
+<body>
 
+    <a href="index.html" class="btn-back">← Back to Index</a>
+
+    <main class="gallery-track">
+        
+        <article class="pano-item">
+            <img src="images/qinghai0.jpg" alt="Qinghai Lake Panorama" loading="lazy">
+            <div class="pano-caption">
+                <h3>Qinghai Lake</h3>
+                <p>Nikon Z9 | 14mm | f/8</p>
+            </div>
+        </article>
+
+        <article class="pano-item">
+            <img src="images/japan1.jpg" alt="Chaka Salt Lake" loading="lazy">
+            <div class="pano-caption">
+                <h3>Chaka Salt Lake</h3>
+                <p>Nikon Z9 | 24mm | f/11</p>
+            </div>
+        </article>
+
+        <article class="pano-item">
+            <img src="images/qinghai-pano-3.jpg" alt="Qunjia Forest" loading="lazy">
+            <div class="pano-caption">
+                <h3>Qunjia</h3>
+                <p>Nikon Z9 | 70mm | f/2.8</p>
+            </div>
+        </article>
+
+        <article class="pano-item end-credits">
+            <h2>End of the journey.</h2>
+        </article>
+
+    </main>
+<script>
+    const track = document.querySelector('.gallery-track');
+    
+    // 准备一把“防连发”的锁
+    let isLocked = false; 
+
+    track.addEventListener('wheel', (event) => {
+        // 1. 触控板左右划？不管它，放行，体验最好。
+        if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+            return;
+        }
+
+        // 2. 拦截上下划
+        event.preventDefault(); 
+
+        // 如果锁上了，说明正在滚动中，忽略触控板多余的指令
+        if (isLocked) return; 
+
+        // 3. 【防误触阈值】：触控板太灵敏，轻轻抖一下也会触发。
+        // 设置必须超过一定力度（比如 15）才算真正的滑动意图。
+        if (Math.abs(event.deltaY) < 15) return; 
+
+        // 一旦判定为有效滑动，立刻上锁！
+        isLocked = true; 
+
+        // 4. 触发翻页
+        const direction = event.deltaY > 0 ? 1 : -1;
+        
+        // 我们只管下令让它滚动大半个屏幕，CSS 的 scroll-snap 会自动接管，精准吸附到下一张图！
+        track.scrollBy({
+            left: direction * window.innerWidth * 0.7, 
+            behavior: 'smooth' 
+        });
+
+        // 5. 锁死 450 毫秒（等照片优雅地滑过去并停稳后，再解锁）
+        setTimeout(() => {
+            isLocked = false;
+        }, 450); 
+
+    }, { passive: false });
+</script>
+</body>
+</html>

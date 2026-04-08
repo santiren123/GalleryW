@@ -1,1 +1,134 @@
 
+/* --- 1. 基础重置与暗黑背景 --- */
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #050505; /* 比主页更深邃的纯黑，突出照片发光感 */
+    color: #f5f5f5;
+    font-family: 'Manrope', sans-serif;
+    
+    /* 核心：彻底锁死上下的滚动条，只允许左右滑动 */
+    overflow-y: hidden; 
+    overflow-x: hidden; 
+}
+
+/* --- 2. 悬浮的返回按钮 --- */
+.btn-back {
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    z-index: 100;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.btn-back:hover {
+    opacity: 1;
+}
+
+/* --- 3. 核心轨道：横向滚动容器 --- */
+.gallery-track {
+    display: flex;
+    align-items: center; /* 让所有照片在垂直方向居中 */
+    height: 100vh;
+    
+    /* 首尾留白，确保第一张和最后一张也能居中 */
+    padding: 0 50vw; 
+    gap: 10vw; /* 两张全景图之间的间距 */
+    
+    /* 开启横向滚动并隐藏丑陋的滚动条 */
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    
+    /* 横向滚动的磁吸魔法 */
+    scroll-snap-type: x mandatory; 
+}
+
+.gallery-track::-webkit-scrollbar {
+    display: none; /* Chrome / Safari 隐藏滚动条 */
+}
+
+/* --- 4. 每一张全景图的容器 --- */
+.pano-item {
+    /* 重点：不限制宽度，让高度定死在 75vh，宽度根据全景图比例自然展开 */
+    height: 75vh;
+    flex: 0 0 auto; 
+    
+    position: relative;
+    
+    /* 核心魔法：滑动停止时，这张图的中心对齐屏幕的中心 */
+    scroll-snap-align: center; 
+}
+
+/* 照片本体样式 */
+.pano-item img {
+    height: 100%;
+    width: auto; /* 高度定死，宽度自动等比缩放 */
+    border-radius: 8px; /* 极小的圆角，更像画框 */
+    object-fit: cover;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8); /* 史诗感阴影 */
+}
+
+/* --- 5. 照片下方的参数排版 --- */
+.pano-caption {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.pano-caption h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.pano-caption p {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #888;
+    letter-spacing: 0.1em;
+}
+
+/* --- 6. 结尾留白卡片 --- */
+.end-credits {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 300px; /* 给结尾文字一个固定宽度 */
+}
+
+.end-credits h2 {
+    font-size: 2rem;
+    opacity: 0.5;
+}
+
+/* 在屏幕右下角加一个若隐若现的提示 */
+.gallery-track::after {
+    content: 'SCROLL TO EXPLORE →';
+    position: fixed;
+    bottom: 2rem;
+    right: 3rem;
+    color: rgba(255, 255, 255, 0.4); /* 半透明高级感 */
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    font-weight: 600;
+    pointer-events: none; /* 防止挡住鼠标点击 */
+    
+    /* 呼吸灯呼吸动画 */
+    animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.2; transform: translateX(0); }
+    50% { opacity: 1; transform: translateX(5px); }
+    100% { opacity: 0.2; transform: translateX(0); }
+}
