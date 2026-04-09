@@ -55,7 +55,7 @@ html, body {
 .pano-item img {
     height: 100%;
     width: auto; 
-    border-radius: 13px; /* 稍微收敛了一点圆角，23px在风光摄影里有点过于圆润了，8px更有画框感 */
+    border-radius: 18px; /* 稍微收敛了一点圆角，23px在风光摄影里有点过于圆润了，8px更有画框感 */
     object-fit: cover;
     box-shadow: 0 20px 50px rgba(0,0,0,0.8); 
 }
