@@ -1,3 +1,6 @@
+* { border: 5px solid red !important; }
+
+
 /* --- 基础重置与暗黑主题变量 --- */
 :root {
     --bg-color: #0a0a0a;       /* 极暗的深空灰底色 */
