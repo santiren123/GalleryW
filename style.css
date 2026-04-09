@@ -208,6 +208,13 @@ background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
     transform: translateX(15px);
 }
 
+footer {
+    text-align: center;
+    padding: 30px;
+    border-top: 2px solid #333;
+    color: var(--accent-color);
+    font-size: 14px;
+}
 
 /* --- 📱 移动端响应式适配 (专治文字挤压) --- */
 @media (max-width: 768px) {
