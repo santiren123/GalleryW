@@ -104,7 +104,7 @@ body {
     background-color: var(--card-bg-1); 
     z-index: 1;
     background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
-    url('images/qinghai0.jpg');
+    url('images/qinghai1.webp');
     background-size:cover;
     
     background-repeat:no-repeat;
@@ -117,7 +117,7 @@ body {
     background-color: var(--card-bg-2); 
     z-index: 2; 
      background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
-    url('images/japan1.jpg');
+    url('images/japan1.webp');
     background-size:cover;
     background-repeat:no-repeat;
     transform:translateZ(0);
@@ -129,7 +129,7 @@ body {
     background-color: var(--card-bg-3); 
     z-index: 3; 
     background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
-    url('images/chongqing1.jpg');
+    url('images/chongqing1.webp');
      background-size:cover;
     background-repeat:no-repeat;
     transform:translateZ(0);
@@ -141,7 +141,7 @@ body {
     background-color: var(--card-bg-3); 
     z-index: 4; 
     background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
-    url('images/lijiang1.jpg');
+    url('images/lijiang1.webp');
      background-size:cover;
     background-repeat:no-repeat;
     transform:translateZ(0);
@@ -153,7 +153,7 @@ body {
     background-color: var(--card-bg-3); 
     z-index: 5; 
 background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
-    url('images/Weixin Image_20260405135549_9_4.jpg');
+    url('images/me.webp');
      background-size:cover;
     background-repeat:no-repeat;
     transform:translateZ(0);
