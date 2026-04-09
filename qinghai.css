@@ -151,4 +151,12 @@ body::after {
     .pano-item img {
         border-radius: 18px; 
     }
+    body::after {
+        /* 把距离底部和右侧的距离极限压缩 */
+        bottom: 1rem; 
+        right: 1rem; 
+        font-size: 0.6rem; /* 字体再缩小一点 */
+        /* 增加一个极其微弱的黑色文字发光背景，防止和照片文字完全糊在一起 */
+        text-shadow: 0 0 10px rgba(0,0,0,0.8);
+    }
 }
