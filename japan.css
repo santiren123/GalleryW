@@ -216,3 +216,27 @@ html, body {
     border-bottom: 1.5px solid #fff; /* 鼠标放上去下划线全亮 */
     opacity: 0.8;
 }
+
+/* ========================================= */
+/* 防止卡顿-占座雷霆公交车 */
+/* ========================================= */
+
+/* 1. 横图占位 (假设是 3:2 比例，如果是 16:9 就改成 16 / 9) */
+.align-left .image-wrapper,
+.align-center .image-wrapper {
+    aspect-ratio: 3 / 2; 
+    background-color: #151515; /* 加个极暗的底色，加载时显得很高级 */
+}
+
+/* 2. 竖图占位 (2:3 比例) */
+.align-right.portrait .image-wrapper {
+    aspect-ratio: 2 / 3; 
+    background-color: #151515; 
+}
+
+/* 3. 让图片完美填充这个座位，绝对不变形 */
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 像裁切一样填满占位框 */
+}
