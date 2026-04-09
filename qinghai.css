@@ -148,7 +148,7 @@ body.lang-zh::after {
 
     .pano-item {
         /* 🎯 图片高度拉大到 60vh，冲击力更强 */
-        height: 72vh; 
+        height: 63vh; 
     }
 
     .pano-item img {
