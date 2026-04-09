@@ -1,0 +1,169 @@
+/* --- 1. 基础与重置 --- */
+html, body {
+    margin: 0;
+    padding: 0;
+    /* 极致的纯黑，比画廊更深邃 */
+    background-color: #050505; 
+    color: #fff;
+    font-family: 'Manrope', sans-serif;
+    /* 锁定页面，禁止滚动 */
+    width: 100vw;
+    height: 100dvh; 
+    overflow: hidden; 
+   
+}
+
+/* --- 2. 胶片噪点 (提升质感的神器) --- */
+.noise-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    /* 利用 base64 生成一个极淡的噪点图 */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* --- 3. 四角坐标系布局 --- */
+.coordinate-layout {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 2.5rem;
+    box-sizing: border-box;
+}
+
+.corner {
+    position: absolute;
+    z-index: 5;
+}
+
+/* --- 左上：品牌标识 --- */
+.top-left { top: 2.5rem; left: 2.5rem; }
+
+.name-brand {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    margin: 0;
+}
+
+.sub-brand {
+    font-size: 0.65rem;
+    color: #666;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 0.5rem;
+}
+
+/* --- 4. 视觉中心：错位巨幕字体 --- */
+.center-title {
+    position: absolute;
+    top: 50%; left: 20%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    /* 防止巨型字体挡住四角的点击 */
+    pointer-events: none; 
+}
+
+.title-layer {
+    font-family: 'Playfair Display', serif;
+    /* clamp：极其高级的缩放逻辑。字号会在 3rem 到 12vw 之间动态调整，绝不换行 */
+    font-size: clamp(3rem, 12vw, 10rem); 
+    line-height: 0.75;
+    white-space: nowrap;
+}
+
+.title-layer.back {
+    color: transparent;
+    /* 镂空描边特效 */
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15); 
+    transform: translateX(-5vw); /* 整体往左偏 */
+}
+
+.title-layer.front {
+    color: #e0e0e0;
+    font-style: italic;
+    transform: translateX(5vw); /* 整体往右偏，形成错落叠层 */
+}
+
+/* --- 5. 左下：极客感器材清单 --- */
+.bottom-left { bottom: 2.5rem; left: 2.5rem; }
+
+.gear-list {
+    font-family: 'JetBrains Mono', monospace; /* 引入等宽代码字体 */
+    font-size: 0.65rem;
+    color: #555;
+    line-height: 1.6;
+    transition: color 0.3s ease;
+}
+
+.gear-list:hover { color: #aaa; } /* 鼠标移上去隐约变亮 */
+
+.blink {
+    animation: blinker 1s linear infinite;
+    color: #fff;
+}
+@keyframes blinker { 50% { opacity: 0; } }
+
+/* --- 6. 右下：坐标与入口 --- */
+.bottom-right { 
+    bottom: 2.5rem; 
+    right: 2.5rem; 
+    text-align: right; 
+}
+
+.geo-coord {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: #555;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.1em;
+}
+
+.enter-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: #fff;
+    text-decoration: none;
+    letter-spacing: 0.2em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 0.3rem;
+    transition: all 0.3s ease;
+}
+
+.enter-btn:hover {
+    border-bottom: 1px solid #fff;
+    gap: 1rem; /* 悬停时箭头向右推开，极其优雅的微交互 */
+}
+
+/* --- 7. 出场动画序列 --- */
+.fade-in-1 { animation: fadeIn 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; }
+.fade-in-2 { animation: fadeIn 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s forwards; opacity: 0; }
+.fade-in-3 { animation: fadeIn 2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s forwards; opacity: 0; }
+.fade-in-4 { animation: fadeIn 2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.9s forwards; opacity: 0; }
+
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* --- 8. 手机端响应式 --- */
+@media (max-width: 768px) {
+    .coordinate-layout { padding: 1.5rem; }
+    
+    .top-left { top: 1.5rem; left: 1.5rem; }
+    
+    /* 手机上中间的字改成上下堆叠，取消左右偏移，防止溢出屏幕 */
+    .title-layer.back { transform: translateX(0); margin-bottom: 0.5rem; }
+    .title-layer.front { transform: translateX(0); font-size: 15vw; }
+
+    /* 手机端布局压缩，把角落元素稍微集中 */
+    .bottom-left { bottom: 6rem; left: 1.5rem; }
+    .bottom-right { bottom: 1.5rem; right: 1.5rem; }
+}
