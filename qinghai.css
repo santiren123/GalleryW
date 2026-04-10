@@ -18,11 +18,11 @@ html, body {
     color: #fff;
     text-decoration: none;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 1rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     z-index: 100;
-    opacity: 0.6;
+    opacity: 0.8;
     transition: opacity 0.3s ease;
 }
 

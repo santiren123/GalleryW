@@ -64,8 +64,8 @@ html, body {
 /* --- 2. 悬浮组件 --- */
 .btn-back {
     position: fixed; top: 2rem; left: 2rem; z-index: 100;
-    color: rgba(255,255,255,0.4); text-decoration: none; 
-    font-size: 0.8rem; letter-spacing: 0.2em; font-weight: 600;
+    color: rgba(255,255,255,0.8); text-decoration: none; 
+    font-size: 1rem; letter-spacing: 0.2em; font-weight: 600;
     transition: color 0.3s;
 }
 .btn-back:hover { color: #fff; }
