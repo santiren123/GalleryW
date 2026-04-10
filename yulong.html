@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>William's Photography - Yulong Snow Mountain</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="yulong.css?v=103">
+    <link rel="stylesheet" href="yulong.css?v=105">
     <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
@@ -97,8 +97,8 @@
 
             // --- 电脑端：监听鼠标滚轮 ---
             window.addEventListener('wheel', (e) => {
-                if (e.deltaY > 30) goToSlide(current + 1); // 向下滚，海拔上升
-                if (e.deltaY < -30) goToSlide(current - 1); // 向上滚，海拔下降
+                if (e.deltaY > 10) goToSlide(current + 1); // 向下滚，海拔上升
+                if (e.deltaY < -10) goToSlide(current - 1); // 向上滚，海拔下降
             });
 
             // --- 手机端：监听手指滑动 ---
@@ -108,8 +108,8 @@
                 const touchEndY = e.changedTouches[0].clientY;
                 const delta = touchStartY - touchEndY;
                 
-                if (delta > 50) goToSlide(current + 1); // 向上划，看下一张
-                if (delta < -50) goToSlide(current - 1); // 向下划，看上一张
+                if (delta > 20) goToSlide(current + 1); // 向上划，看下一张
+                if (delta < -20) goToSlide(current - 1); // 向下划，看上一张
             });
         });
     </script>

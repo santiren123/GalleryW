@@ -18,4 +18,9 @@ Change Log V2.2
 
 -We are almost there!
 
-Lijiang is the only gallery left to be built!
+-Lijiang is the only gallery left to be built!
+
+V2.2.1
+
+Website done!
+-Made scrolling experience more fluent.
