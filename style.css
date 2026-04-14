@@ -10,6 +10,64 @@
     --card-bg-2: #242424;      
     --card-bg-3: #2e2e2e;      
 }
+
+/* --- 顶级画廊 Loading 仪式感 --- */
+
+/* 加载期间锁死滚动条，防止盲摇 */
+body.is-loading {
+    overflow: hidden;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0; 
+    left: 0; 
+    width: 100vw; 
+    height: 100vh;
+    background-color: #030305; /* 极其压抑深邃的黑 */
+    z-index: 9999; /* 保证它盖住网站的所有东西 */
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    /* 核心灵魂：极其平滑的贝塞尔曲线滑出动画 */
+    transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* 触发滑开状态 */
+.loading-overlay.slide-up {
+    transform: translateY(-100%);
+}
+
+.loading-text {
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.5rem; /* 极致的克制 */
+    letter-spacing: 0.4em;
+    color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+    line-height: 2.5;
+    /* 微弱的呼吸感，告诉用户网页没死机 */
+    animation: textPulse 2s infinite alternate ease-in-out;
+}
+
+/* 用 Playfair Display 增加一丝文学气质 */
+.loading-text .italic-sub {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 0.2em;
+}
+
+@keyframes textPulse {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+
+
+
+
+
+
 h2 {
 
     hyphens: auto;          
