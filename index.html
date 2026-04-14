@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>William's Gallery</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1010">
+    <link rel="stylesheet" href="style.css?v=1011">
     <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body class="is-loading">
@@ -90,7 +90,7 @@
     </div>
 
     <footer>
-        <p> V2.2.1(123)William's Photo Gallery. All Rights Reserved. &copy;2023-2026</p>
+        <p> V2.2.1.1(125)William's Photo Gallery. All Rights Reserved. &copy;2023-2026</p>
     </footer>
 
     <script>
@@ -119,6 +119,46 @@
 
         // 路线 B（保底防卡死）：如果 GitHub Pages 太拉胯，等了 3.5 秒还没下完，强行滑开，不让用户干等
         setTimeout(revealGallery, 3500);
+
+        const observerOptions = {
+    root: null,
+    // threshold: 0.6 表示卡片有 60% 进入视口时触发，
+    // 但对于 sticky 卡片，我们监测它是否处于屏幕中心更准
+    rootMargin: "-20% 0% -20% 0%", 
+    threshold: 0.5
+};
+
+const cards = document.querySelectorAll('.project-card');
+        
+        function updateActiveCard() {
+            // 触发线设定在屏幕正中央 (50%)
+            const triggerLine = window.innerHeight * 0.7; 
+            let activeIndex = -1;
+
+            for (let i = cards.length - 1; i >= 0; i--) {
+                const rect = cards[i].getBoundingClientRect();
+                
+                // 当卡片顶部距离屏幕顶部的距离 小于 触发线时
+                if (rect.top < triggerLine) {
+                    activeIndex = i;
+                    break;
+                }
+            }
+
+            cards.forEach((card, index) => {
+                if (index === activeIndex) {
+                    card.classList.add('is-active');
+                } else {
+                    card.classList.remove('is-active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', () => {
+            requestAnimationFrame(updateActiveCard);
+        });
+
+        updateActiveCard();
     </script>
 
 </body>
