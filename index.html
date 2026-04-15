@@ -75,18 +75,35 @@
             </article>
 
             <article class="project-card card-5">
-                <div class="card-header">
-                    <span class="card-year">∞</span>
-                    <span class="card-year">...</span>
-                </div>
-                <div class="card-content">
-                    <h2>William</h2>
-                    <p>I am Whatever It Takes.</p>
-                    <a href="about.html" class="btn-view">About</a>
-                </div>
-            </article>
+    <div class="card-header">
+        <span class="card-year">ABOUT</span>
+        <span class="card-year">∞</span>
+    </div>
+    <div class="card-content">
+        <h2>William</h2>
+        <p>I am Whatever It Takes.</p>
+        <a href="about.html" class="btn-view">About</a>
+    </div>
+
+    <div class="archive-stub">
+        <div class="stub-divider">
+         
         </div>
-          
+        <div class="stub-body">
+            <div class="stub-info">
+                <span class="stub-tag">BEYOND THE FOLD</span>
+                <p class="stub-text">More collections and past archives.</p>
+            </div>
+            <a href="archive.html" class="stub-button">
+                GO TO ARCHIVE
+                <svg viewBox="0 0 24 24" class="stub-arrow"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+            </a>
+        </div>
+    </div>
+</article>
+             
+        </div>
+        
     </div>
 
     <footer>
@@ -132,7 +149,7 @@ const cards = document.querySelectorAll('.project-card');
         
         function updateActiveCard() {
             // 触发线设定在屏幕正中央 (82%)
-            const triggerLine = window.innerHeight * 0.8; 
+            const triggerLine = window.innerHeight * 0.83; 
             let activeIndex = -1;
 
             for (let i = cards.length - 1; i >= 0; i--) {
@@ -159,6 +176,52 @@ const cards = document.querySelectorAll('.project-card');
         });
 
         updateActiveCard();
+
+
+// 在原有的 index.html 脚本中，确保 observer 或 scroll 逻辑涵盖了新的 archive-stub
+// 请在 index.html 的 <script> 标签中找到对应位置进行覆盖
+let ticking = false;
+
+function updateActiveCard() {
+    // 重新获取卡片，避免全局常量冲突
+    const allProjectCards = document.querySelectorAll('.project-card');
+    const triggerLine = window.innerHeight * 0.83; 
+    let activeIndex = -1;
+
+    allProjectCards.forEach((card, i) => {
+        const rect = card.getBoundingClientRect();
+        if (rect.top < triggerLine) {
+            activeIndex = i;
+        }
+    });
+
+    allProjectCards.forEach((card, index) => {
+        if (index === activeIndex) {
+            card.classList.add('is-active');
+        } else {
+            card.classList.remove('is-active');
+        }
+    });
+}
+
+// 确保滚动监听不会阻塞 revealGallery 
+window.addEventListener('scroll', () => {
+    if (!ticking) {
+        window.requestAnimationFrame(() => {
+            updateActiveCard();
+            ticking = false;
+        });
+        ticking = true;
+    }
+});
+
+// 检查是否已经定义过 revealGallery，如果没有，请保留原有的定义逻辑
+// 确保 revealGallery 能够顺利运行是解决“卡在加载界面”的关键
+
+
+
+
+
     </script>
 
 </body>

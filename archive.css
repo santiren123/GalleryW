@@ -1,0 +1,96 @@
+/* --- 1. 基础设定 --- */
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #030305; /* 沿用主页极黑 */
+    color: #fff;
+    font-family: 'Manrope', sans-serif;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 噪点层 */
+.noise-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* 返回按钮 */
+.btn-back {
+    position: fixed;
+    top: 3rem;
+    left: 3rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    z-index: 20;
+    transition: color 0.3s ease;
+}
+.btn-back:hover { color: #fff; }
+
+/* --- 2. 文字堆栈排版 --- */
+.archive-wrapper {
+    text-align: center;
+    z-index: 5;
+}
+
+.reveal-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+/* 共同样式：Manrope 的现代感 */
+.reveal-stack > * {
+    margin: 0;
+    letter-spacing: 0.5em;
+    font-weight: 300;
+    transition: all 1s ease;
+}
+
+/* --- 3. 亮度与权重的梯级消失 --- */
+
+/* 第一级：最亮，使用 Playfair Display 的斜体，增加文学气质 */
+.text-level-1 {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 2.5rem;
+    opacity: 1;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+}
+
+/* 第二级：中文 */
+.text-level-2 {
+    font-size: 1.5rem;
+    opacity: 0.7;
+    font-weight: 400;
+    letter-spacing: 0.8em;
+}
+
+/* 后续梯级：逐渐暗淡、缩小、并加入轻微模糊 */
+.text-level-3 { font-size: 1.2rem; opacity: 0.6; filter: blur(0.5px); }
+.text-level-4 { font-size: 1.1rem; opacity: 0.50; filter: blur(1px); }
+.text-level-5 { font-size: 1.0rem; opacity: 0.40; filter: blur(1.3px); }
+.text-level-6 { font-size: 0.9rem; opacity: 0.32; filter: blur(1.8px); }
+.text-level-7 { font-size: 0.8rem; opacity: 0.2; filter: blur(2px); }
+.text-level-8 { font-size: 0.7rem; opacity: 0.1; filter: blur(2.4px); }
+.text-level-9 { font-size: 0.6rem; opacity: 0.05; filter: blur(2.9px); }
+
+/* 入场动画：让文字像呼吸一样缓缓浮现 */
+@keyframes fadeInUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); }
+}
+
+.reveal-stack {
+    animation: fadeInUp 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}

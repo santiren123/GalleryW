@@ -227,14 +227,16 @@ body {
     top: calc(10vh + 120px); /*每加一个卡片+30px*/
     background-color: var(--card-bg-3); 
     z-index: 5; 
-background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+    background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
     url('images/me.webp');
      background-size:cover;
     background-repeat:no-repeat;
     transform:translateZ(0);
     background-clip:padding-box;
     overflow: hidden;
-    
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 /* --- innner cards --- */
@@ -310,5 +312,102 @@ footer {
     /* 4. 首屏的 Hero 大字也跟着收缩一下，保持整体比例和谐 */
     .hero h1 {
         font-size: clamp(2.5rem, 10vw, 4rem);
+    }
+}
+/* --- Archive Stub Aesthetics --- */
+/* --- Archive Stub: The Hospitality Exit --- */
+/* style.css */
+
+/* 1. 确保父卡片允许内容溢出并作为定位基准 */
+/* style.css */
+
+/* 1. 确保父卡片允许内容溢出并作为定位基准 */
+.project-card.card-5 {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* 假设你的主卡片圆角是 30px，这里需要一致 */
+    border-radius: 32px; 
+    overflow: hidden; /* 裁剪内容以符合圆角 */
+}
+
+/* 2. Archive Stub 的样式重构 */
+.archive-stub {
+    width: 100%;
+    height: 150px; /* 进一步压缩高度，确保它像一个小备注 */
+    background-color: #08080a; /* 比卡片稍浅或稍深一点，制造层次感 */
+    padding: 0 3rem 2rem 3rem;
+    box-sizing: border-box;
+    /* 💡 圆角设定：保持与主卡片底部一致 */
+    border-bottom-left-radius: 32px;
+    border-bottom-right-radius: 32px;
+}
+
+/* 3. 模拟机票虚线：不再使用 border-top，使用一个独立的 div 更有质感 */
+.stub-divider {
+    width: 100%;
+    height: 1px;
+    padding-top: 1rem;
+    margin-bottom: 1.5rem;
+    border-top: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.stub-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.stub-tag {
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.stub-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: #888;
+    margin: 0.3rem 0 0 0;
+}
+
+.stub-button {
+    text-decoration: none;
+    color: #fff;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 0.2rem;
+    transition: all 0.3s ease;
+}
+
+.stub-button:hover {
+    gap: 1rem;
+    border-bottom-color: #fff;
+}
+
+.stub-arrow {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+}
+/* 移动端优化 */
+@media (max-width: 768px) {
+    .archive-stub {
+        height: 20vh;
+        margin-top: -5vh;
+    }
+    .stub-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
     }
 }
