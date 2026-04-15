@@ -135,8 +135,34 @@ body {
     line-height: 1.1;
     letter-spacing: -0.03em;
     max-width: 800px;
+    /* 核心：多层光晕叠加 */
+    text-shadow: 
+        0 0 10px rgba(255, 255, 255, 4), /* 核心柔化 */
+        0 0 30px rgba(255, 255, 255, 0.2),  /* 中层扩散 */
+        0 0 60px rgba(255, 255, 255, 0.1); /* 远端微光 */
+        
+    /* 配合平滑的过渡效果 */
+    transition: text-shadow 0.8s ease;
+}
+/* 定义呼吸动画 */
+@keyframes sloganGlow {
+    0%, 100% {
+        text-shadow: 
+            0 0 10px rgba(255, 255, 255, 0.15),
+            0 0 30px rgba(255, 255, 255, 0.1);
+    }
+    50% {
+        text-shadow: 
+            0 0 15px rgba(255, 255, 255, 0.62), /* 稍微变亮 */
+            0 0 45px rgba(255, 255, 255, 0.45),
+            0 0 70px rgba(255, 255, 255, 0.22);
+    }
 }
 
+/* 应用到 slogan 上 */
+.hero h1 {
+    animation: sloganGlow 5.2s infinite ease-in-out;
+}
 /* --- (The Stacking Cards) --- */
 .projects-stack {
     padding-bottom: 30vh; 
