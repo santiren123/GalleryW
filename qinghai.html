@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Qinghai Panoramas | William's Gallery</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
-    
+    <link rel="stylesheet" href="cursor.css">
     <link rel="stylesheet" href="qinghai.css?v=1003">
     <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
-
+<div class="cursor-dot" id="cursor-dot"></div>
+<div class="cursor-viewfinder" id="cursor-viewfinder"></div>
     <a href="index.html" class="btn-back">← BACK TO HOME</a>
 
     <main class="gallery-track">
@@ -151,5 +152,6 @@
 
     }, { passive: false });
 </script>
+<script src="cursor.js"></script>
 </body>
 </html>

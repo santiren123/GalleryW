@@ -1,0 +1,56 @@
+/* =========================================
+   cursor.css - Gallery W 磁性取景器
+   ========================================= */
+
+/* 仅在屏幕宽度大于 768px (桌面端) 时启用自定义光标 */
+@media (min-width: 769px) {
+    /* 隐藏全局原生光标，这里列出了你所有页面的核心可交互元素 */
+    body, a, button, .project-card, .photo-card, .tunnel-item {
+        cursor: none !important; 
+    }
+
+    .cursor-dot {
+        width: 4px;
+        height: 4px;
+        background: #fff;
+        border-radius: 50%;
+        position: fixed;
+        top: 0; left: 0;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0; /* 初始隐藏，由 JS 接管后显示，防闪烁 */
+        transition: opacity 0.3s ease;
+    }
+
+    .cursor-viewfinder {
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        position: fixed;
+        top: 2px; left: 2px;
+        pointer-events: none;
+        z-index: 9998;
+        transform: translate(-50%, -50%);
+        opacity: 0; /* 初始隐藏 */
+        transition: width 0.3s ease, height 0.3s ease, border 0.3s ease, background 0.3s ease, opacity 0.3s ease;
+    }
+
+    /* 悬停合焦状态 */
+    .cursor-viewfinder.is-hovering {
+        width: 55px;
+        height: 55px;
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        background: rgba(144, 144, 144, 0.5);
+    }
+}
+
+/* 移动端安全策略：强制关闭自定义光标，恢复系统默认，防止触屏逻辑混乱 */
+@media (max-width: 768px) {
+    .cursor-dot, .cursor-viewfinder {
+        display: none !important;
+    }
+    body {
+        cursor: auto !important;
+    }
+}

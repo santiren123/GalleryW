@@ -503,7 +503,7 @@ a, button, .project-card {
     width: 4px;
     height: 4px;
     background: #fff;
-    border-radius: 50%;
+    border-radius: 100%;
     position: fixed;
     top: 0; left: 0;
     pointer-events: none;
@@ -516,7 +516,7 @@ a, button, .project-card {
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
     position: fixed;
-    top: 0; left: 0;
+    top: 2px; left: 2px;
     pointer-events: none;
     z-index: 9998;
     transform: translate(-50%, -50%);
@@ -525,10 +525,10 @@ a, button, .project-card {
 
 /* 悬停状态下的取景器变大且合焦 */
 .cursor-viewfinder.is-hovering {
-    width: 60px;
-    height: 60px;
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    background: rgba(255, 255, 255, 0.05);
+    width: 55px;
+    height: 55px;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    background: rgba(146, 146, 146, 0.25);
 }
 
 /* 适配移动端：关闭自定义光标 */
