@@ -7,30 +7,39 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=1030">
     <link rel="icon" type="image/png" href="images/favicon.png">
-</head>
-<body class="is-loading">
+    
+    <style>
+        /* 默认隐藏幕布，防止老访客看到它闪烁 */
+        #loading-overlay { display: none; }
+        /* 只有首次访问，才显示幕布并锁定滚动 */
+        html.first-visit #loading-overlay { display: flex; }
+        html.first-visit body { overflow: hidden; }
+    </style>
     <script>
-        if (sessionStorage.getItem('introPlayed')) {
-            // 如果已经看过，立刻撕掉 loading 标签并隐藏幕布
-            document.body.classList.remove('is-loading');
-            document.head.insertAdjacentHTML('beforeend', '<style>#loading-overlay { display: none !important; }</style>');
+        // 在任何像素渲染前执行
+        if (!sessionStorage.getItem('introPlayed')) {
+            document.documentElement.classList.add('first-visit');
         }
     </script>
-<nav class="scroll-compass">
-    <div class="compass-line-track">
-        <div class="compass-active-bar" id="compass-bar"></div>
-    </div>
-    <ul class="compass-steps">
-        <li class="step-item is-active" data-index="0">01</li>
-        <li class="step-item" data-index="1">02</li>
-        <li class="step-item" data-index="2">03</li>
-        <li class="step-item" data-index="3">04</li>
-        <li class="step-item" data-index="4">05</li>
-    </ul>
-</nav>
+</head>
+<body>
+    
+    <nav class="scroll-compass">
+        <div class="compass-line-track">
+            <div class="compass-active-bar" id="compass-bar"></div>
+        </div>
+        <ul class="compass-steps">
+            <li class="step-item is-active" data-index="0">01</li>
+            <li class="step-item" data-index="1">02</li>
+            <li class="step-item" data-index="2">03</li>
+            <li class="step-item" data-index="3">04</li>
+            <li class="step-item" data-index="4">05</li>
+        </ul>
+    </nav>
 
-<div class="cursor-dot" id="cursor-dot"></div>
-<div class="cursor-viewfinder" id="cursor-viewfinder"></div>
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-viewfinder" id="cursor-viewfinder"></div>
+
     <div class="loading-overlay" id="loading-overlay">
         <div class="loading-text">
             WILL'S PHOTO GALLERY<br>
@@ -46,7 +55,6 @@
         </header>
 
         <div class="projects-stack">
-            
             <article class="project-card card-1">
                 <div class="card-header">
                     <span class="card-year">24Q2</span>
@@ -96,99 +104,77 @@
             </article>
 
             <article class="project-card card-5">
-    <div class="card-header">
-        <span class="card-year">∞</span>
-        <span class="card-year">...</span>
-    </div>
-    <div class="card-content">
-        <h2>William</h2>
-        <p>I am Whatever It Takes.</p>
-        <a href="about.html" class="btn-view">About</a>
-    </div>
-
-    <div class="archive-stub">
-        <div class="stub-divider">
-         
+                <div class="card-header">
+                    <span class="card-year">∞</span>
+                    <span class="card-year">...</span>
+                </div>
+                <div class="card-content">
+                    <h2>William</h2>
+                    <p>I am Whatever It Takes.</p>
+                    <a href="about.html" class="btn-view">About</a>
+                </div>
+                <div class="archive-stub">
+                    <div class="stub-divider"></div>
+                    <div class="stub-body">
+                        <div class="stub-info">
+                            <span class="stub-tag">BEYOND THE FOLD</span>
+                            <p class="stub-text">More collections and past archives.</p>
+                        </div>
+                        <a href="archive.html" class="stub-button">
+                            GO TO ARCHIVE
+                            <svg viewBox="0 0 24 24" class="stub-arrow"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
         </div>
-        <div class="stub-body">
-            <div class="stub-info">
-                <span class="stub-tag">BEYOND THE FOLD</span>
-                <p class="stub-text">More collections and past archives.</p>
-            </div>
-            <a href="archive.html" class="stub-button">
-                GO TO ARCHIVE
-                <svg viewBox="0 0 24 24" class="stub-arrow"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
-            </a>
-        </div>
-    </div>
-</article>
-             
-        </div>
-        
     </div>
 
     <footer>
-        <p> V2.3(139)William's Photo Gallery. All Rights Reserved. &copy;2026</p>
+        <p>V2.3(139) William's Photo Gallery. All Rights Reserved. &copy;2026</p>
     </footer>
 
     <script>
-
-
-
-
-
-        let isLoaded = false;
-        
-        // 核心滑开函数
+        /**
+         * 1. 开屏揭幕逻辑
+         */
         function revealGallery() {
-    // 因为拦截器已经工作，如果看过动画，body 上就没有 is-loading 了，这个 if 就会被直接跳过
-    if (document.body.classList.contains('is-loading')) {
-        
-        // 💡 新增：在浏览器里刻下“已播放”的记忆
-        sessionStorage.setItem('introPlayed', 'true');
+            // 只有首次访问才执行揭幕动画
+            if (document.documentElement.classList.contains('first-visit')) {
+                sessionStorage.setItem('introPlayed', 'true');
+                document.documentElement.classList.remove('first-visit');
+                
+                const overlay = document.getElementById('loading-overlay');
+                if (overlay) {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => {
+                        overlay.remove(); // 物理删除，防止遮挡
+                    }, 1200);
+                }
+            }
+        }
 
-        document.body.classList.remove('is-loading');
-        const overlay = document.getElementById('loading-overlay');
-        setTimeout(() => {
-            overlay.style.opacity = '0';
-            setTimeout(() => {
-                overlay.remove();
-            }, 1200);
-        }, 300);
-    }
-}
-
-        // 路线 A：正常情况，所有大图和 CSS 下载完毕后，优雅滑开
         window.addEventListener('load', revealGallery);
+        setTimeout(revealGallery, 3500); // 保底
 
-        // 路线 B（保底防卡死）：如果 GitHub Pages 太拉胯，等了 3.5 秒还没下完，强行滑开，不让用户干等
-        setTimeout(revealGallery, 3500);
+        /**
+         * 2. 核心滑动逻辑 (卡片激活 + 罗盘同步)
+         */
+        const cards = document.querySelectorAll('.project-card');
+        let ticking = false;
 
-        const observerOptions = {
-    root: null,
-    // threshold: 0.6 表示卡片有 60% 进入视口时触发，
-    // 但对于 sticky 卡片，我们监测它是否处于屏幕中心更准
-    rootMargin: "-20% 0% -20% 0%", 
-    threshold: 0.5
-};
-
-const cards = document.querySelectorAll('.project-card');
-        
         function updateActiveCard() {
-            // 触发线设定在屏幕正中央 (82%)
             const triggerLine = window.innerHeight * 0.83; 
             let activeIndex = -1;
 
-            for (let i = cards.length - 1; i >= 0; i--) {
-                const rect = cards[i].getBoundingClientRect();
-                
-                // 当卡片顶部距离屏幕顶部的距离 小于 触发线时
+            cards.forEach((card, i) => {
+                const rect = card.getBoundingClientRect();
                 if (rect.top < triggerLine) {
                     activeIndex = i;
-                    break;
                 }
-            }
+            });
 
+            // 更新卡片状态
             cards.forEach((card, index) => {
                 if (index === activeIndex) {
                     card.classList.add('is-active');
@@ -196,160 +182,63 @@ const cards = document.querySelectorAll('.project-card');
                     card.classList.remove('is-active');
                 }
             });
+
+            // 更新罗盘状态
+            const bar = document.getElementById('compass-bar');
+            const steps = document.querySelectorAll('.step-item');
+            if (bar && activeIndex !== -1) {
+                bar.style.transform = `translateY(${activeIndex * 36}px)`;
+                steps.forEach((step, i) => {
+                    step.classList.toggle('is-active', i === activeIndex);
+                });
+            }
         }
 
         window.addEventListener('scroll', () => {
-            requestAnimationFrame(updateActiveCard);
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    updateActiveCard();
+                    ticking = false;
+                });
+                ticking = true;
+            }
         });
 
+        // 初始执行一次
         updateActiveCard();
 
+        /**
+         * 3. 取景器光标阻尼逻辑
+         */
+        const dot = document.getElementById('cursor-dot');
+        const viewfinder = document.getElementById('cursor-viewfinder');
+        let mouseX = 0, mouseY = 0;
+        let dotX = 0, dotY = 0;
+        let vX = 0, vY = 0;
 
-// 在原有的 index.html 脚本中，确保 observer 或 scroll 逻辑涵盖了新的 archive-stub
-// 请在 index.html 的 <script> 标签中找到对应位置进行覆盖
-let ticking = false;
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
 
-function updateActiveCard() {
-    // 重新获取卡片，避免全局常量冲突
-    const allProjectCards = document.querySelectorAll('.project-card');
-    const triggerLine = window.innerHeight * 0.83; 
-    let activeIndex = -1;
-
-    allProjectCards.forEach((card, i) => {
-        const rect = card.getBoundingClientRect();
-        if (rect.top < triggerLine) {
-            activeIndex = i;
-        }
-    });
-
-    allProjectCards.forEach((card, index) => {
-        if (index === activeIndex) {
-            card.classList.add('is-active');
-        } else {
-            card.classList.remove('is-active');
-        }
-    });
-}
-
-// 确保滚动监听不会阻塞 revealGallery 
-window.addEventListener('scroll', () => {
-    if (!ticking) {
-        window.requestAnimationFrame(() => {
-            updateActiveCard();
-            ticking = false;
+            const target = e.target;
+            const isHover = target.closest('a') || target.closest('button') || target.closest('.project-card');
+            viewfinder.classList.toggle('is-hovering', !!isHover);
         });
-        ticking = true;
-    }
-});
 
-// index.html 底部脚本追加
+        function animateCursor() {
+            dotX += (mouseX - dotX) * 0.2;
+            dotY += (mouseY - dotY) * 0.2;
+            dot.style.transform = `translate(${dotX}px, ${dotY}px)`;
 
-// 1. 确保在脚本顶部定义了罗盘更新函数
-function updateCompass(index) {
-    const bar = document.getElementById('compass-bar');
-    const steps = document.querySelectorAll('.step-item');
-    if (!bar || index === -1) return;
+            vX += (mouseX - vX) * 0.1;
+            vY += (mouseY - vY) * 0.1;
+            viewfinder.style.transform = `translate(${vX}px, ${vY}px) translate(-50%, -50%)`;
 
-    // 移动高亮条：180px总高 / 5个档位 = 36px/档
-    bar.style.transform = `translateY(${index * 36}px)`;
-
-    // 切换文字激活状态
-    steps.forEach((step, i) => {
-        if (i === index) {
-            step.classList.add('is-active');
-        } else {
-            step.classList.remove('is-active');
+            requestAnimationFrame(animateCursor);
         }
-    });
-}
-
-// 2. 修改你原有的 updateActiveCard 函数
-function updateActiveCard() {
-    const triggerLine = window.innerHeight * 0.83; 
-    let activeIndex = -1;
-
-    // 这里的 cards 是你原有的 document.querySelectorAll('.project-card')
-    for (let i = cards.length - 1; i >= 0; i--) {
-        const rect = cards[i].getBoundingClientRect();
-        if (rect.top < triggerLine) {
-            activeIndex = i;
-            break;
-        }
-    }
-
-    cards.forEach((card, index) => {
-        if (index === activeIndex) {
-            card.classList.add('is-active');
-        } else {
-            card.classList.remove('is-active');
-        }
-    });
-
-    // 💡 关键：在这里调用罗盘更新
-    updateCompass(activeIndex);
-}
-// index.html 底部脚本追加
-
-// --- 1. 取景器光标逻辑 ---
-const dot = document.getElementById('cursor-dot');
-const viewfinder = document.getElementById('cursor-viewfinder');
-let mouseX = 0, mouseY = 0; // 实际鼠标位置
-let dotX = 0, dotY = 0;     // 圆点平滑位置
-let vX = 0, vY = 0;         // 取景器平滑位置
-
-window.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-
-    // 监测悬停目标
-    const target = e.target;
-    if (target.closest('a') || target.closest('button') || target.closest('.project-card')) {
-        viewfinder.classList.add('is-hovering');
-    } else {
-        viewfinder.classList.remove('is-hovering');
-    }
-});
-
-function animateCursor() {
-    // 圆点跟随：极快，接近同步
-    dotX += (mouseX - dotX) * 0.2;
-    dotY += (mouseY - dotY) * 0.2;
-    dot.style.transform = `translate(${dotX}px, ${dotY}px)`;
-
-    // 取景器跟随：较慢，产生优雅的延迟感（阻尼）
-    vX += (mouseX - vX) * 0.1;
-    vY += (mouseY - vY) * 0.1;
-    viewfinder.style.transform = `translate(${vX}px, ${vY}px) translate(-50%, -50%)`;
-
-    requestAnimationFrame(animateCursor);
-}
-animateCursor();
-
-// --- 2. 罗盘指示器逻辑 ---
-// 复用你现有的 updateActiveCard 函数，仅需在内部添加以下逻辑
-function updateCompass(index) {
-    const bar = document.getElementById('compass-bar');
-    const steps = document.querySelectorAll('.step-item');
-    
-    if (index === -1) return;
-
-    // 移动高亮条：每格 36px (根据 CSS 中的 height 设置)
-    bar.style.transform = `translateY(${index * 36}px)`;
-
-    // 切换文字高亮
-    steps.forEach((step, i) => {
-        if (i === index) {
-            step.classList.add('is-active');
-        } else {
-            step.classList.remove('is-active');
-        }
-    });
-}
-
-// 在你的 updateActiveCard() 函数末尾调用：
-// updateCompass(activeIndex);
-
+        animateCursor();
     </script>
-<script src="transition.js"></script>
+    
+    <script src="transition.js"></script>
 </body>
 </html>
