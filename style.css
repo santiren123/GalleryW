@@ -539,46 +539,49 @@ a, button, .project-card {
 
 
 
-/* 修改 style.css 中的 Media Query 部分 */
 @media (max-width: 768px) {
-    /* 隐藏垂直形态 */
+    /* 将罗盘改造成底部的水平进度条 */
     .scroll-compass {
-        right: auto;
-        top: auto;
-        bottom: 0;
+        right: 0; 
+        top: auto; 
+        bottom: 0; 
         left: 0;
-        width: 100%;
-        height: 60px;
+        width: 100vw;
+        height: auto; /* 高度自适应 */
         transform: none;
-        padding: 0 10%;
-        flex-direction: row; /* 横向排列 */
+        flex-direction: row;
         justify-content: space-between;
-        background: linear-gradient(to top, rgba(3,3,5,0.8), transparent);
+        /* 关键1：加入底部安全区适配，防止被 iPhone 小黑条挡住 */
+        padding: 1rem 10% calc(1rem + env(safe-area-inset-bottom)) 10%; 
+        /* 增加一层黑色渐变底色，确保数字在划过白色照片时依然清晰 */
+        background: linear-gradient(to top, rgba(3,3,5,0.95) 20%, transparent);
+        z-index: 100; /* 确保不被卡片盖住 */
     }
 
     .compass-line-track {
-        display: none; /* 手机端隐藏竖线 */
+        display: none; /* 砍掉垂直线 */
     }
 
     .compass-steps {
-        flex-direction: row; /* 数字横向排开 */
+        flex-direction: row; /* 数字横向展开 */
         width: 100%;
         justify-content: space-between;
         gap: 0;
     }
 
     .step-item {
-        font-size: 0.6rem;
-        opacity: 0.5;
+        font-size: 0.65rem;
+        opacity: 0.4;
+        transition: all 0.3s ease;
     }
     
     .step-item.is-active {
         opacity: 1;
-        border-bottom: 1px solid #fff;
-        padding-bottom: 4px;
+        /* 手机端的高亮表现为文字变白，并稍微上浮 */
+        transform: translateY(-3px);
     }
 
-    /* 手机端自定义光标通常会造成误触，建议强制关闭 */
+    /* 手机端必须关闭自定义光标，防止误触和卡顿 */
     .cursor-dot, .cursor-viewfinder {
         display: none !important;
     }
