@@ -24,3 +24,7 @@ V2.2.1
 
 Website done!
 -Made scrolling experience more fluent.
+
+V2.3
+
+-added countless mini interactions

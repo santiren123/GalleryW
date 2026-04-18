@@ -5,7 +5,7 @@ html, body {
     background-color: #050505; 
     color: #f5f5f5;
     font-family: 'Manrope', sans-serif;
-    /* 彻底锁死垂直方向的系统级滚动，防漏网之鱼 */
+    
     overflow-y: hidden; 
     overflow-x: hidden; 
 }
@@ -15,10 +15,9 @@ html, body {
     position: fixed;
     top: 2rem;
     left: 2rem;
-    /* 💡 1. 核心：启动 Flex 引擎 */
     display: flex;
     align-items: center;
-    gap: 0.5rem; /* 初始挡位间距 */
+    gap: 0.5rem; 
     
     color: #fff;
     text-decoration: none;
@@ -27,20 +26,20 @@ html, body {
     letter-spacing: 0.1em;
     text-transform: uppercase;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    padding-bottom: 0.2rem; /* 建议加一点 padding，让下划线别贴着字 */
+    padding-bottom: 0.2rem; 
     z-index: 100;
     opacity: 0.8;
-    /* 💡 2. 核心：确保 transition 监听了 gap 属性 */
+    
     transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); 
 }
 
 .btn-back:hover { 
     opacity: 1; 
-    gap: 1.2rem; /* 悬停时箭头被有力地向左推开 */
+    gap: 1.2rem; 
     border-bottom: 1px solid #fff;
 }
 
-/* 进阶：单独控制箭头的弹性 */
+
 .back-arrow {
     transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -70,7 +69,7 @@ html, body {
 .pano-item img {
     height: 100%;
     width: auto; 
-    border-radius: 18px; /* 稍微收敛了一点圆角，23px在风光摄影里有点过于圆润了，8px更有画框感 */
+    border-radius: 18px; 
     object-fit: cover;
     box-shadow: 0 20px 50px rgba(0,0,0,0.8); 
 }
@@ -111,7 +110,7 @@ html, body {
     opacity: 0.5; 
 }
 
-/* --- 电脑端：滚动提示 --- */
+/* --- 电脑端：滚动提示@gemini --- */
 body::after {
     content: 'SCROLL TO EXPLORE →';
     position: fixed;
@@ -137,10 +136,10 @@ body.lang-zh::after {
     100% { opacity: 0.2; transform: translateX(0); }
 }
 
-/* --- 7. 手机端响应式终极适配 --- */
+/* --- 7. 手机端响应式终极适配@gemini --- */
 @media (max-width: 768px) {
     
-    /* 🎯 绝杀：不管中英文，手机端强制隐藏提示！ */
+    
     body::after {
         display: none !important; 
     }

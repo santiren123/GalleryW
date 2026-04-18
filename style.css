@@ -214,7 +214,7 @@ body {
     overflow: hidden;
 }
 .card-2 { 
-    top: calc(10vh + 30px); /* 露出上面卡片 30px 的边缘 */
+    top: calc(10vh + 30px); 
     background-color: var(--card-bg-2); 
     z-index: 2; 
      background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
@@ -226,7 +226,7 @@ body {
     overflow: hidden;
 }
 .card-3 { 
-    top: calc(10vh + 60px); /*每加一个卡片+30px*/
+    top: calc(10vh + 60px); 
     background-color: var(--card-bg-3); 
     z-index: 3; 
     background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
@@ -238,7 +238,7 @@ body {
     overflow: hidden;
 }
 .card-4 { 
-    top: calc(10vh + 90px); /*每加一个卡片+30px*/
+    top: calc(10vh + 90px); 
     background-color: var(--card-bg-3); 
     z-index: 4; 
     background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
@@ -250,7 +250,7 @@ body {
     overflow: hidden;
 }
 .card-5 { 
-    top: calc(10vh + 120px); /*每加一个卡片+30px*/
+    top: calc(10vh + 120px); /*everycard+30px!!!!!!!!!!!!!!!!!*/
     background-color: var(--card-bg-3); 
     z-index: 5; 
     background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
@@ -323,14 +323,14 @@ footer {
         padding: 2rem 1.5rem; 
     }
 
-    /* 2. 动态缩小卡片标题：使用 clamp 函数让字体在 2.5rem 到 3.5rem 之间丝滑缩放 */
+    /* 2. 动态缩小卡片标题：使用 clamp 函数让字体在 2.5rem 到 3.5rem 之间丝滑缩放@Gemini */
     .card-content h2 {
         font-size: clamp(2.5rem, 12vw, 3.5rem); 
         line-height: 1.1;
-        word-break: break-word; /* 加上这个保险，万一有个超长单词会自动换行，不会撑爆屏幕 */
+        word-break: break-word; 
     }
 
-    /* 3. 顺手把卡片顶部的参数文字（比如 25Q2）也稍微调小一点，显得更精致 */
+    
     .card-year {
         font-size: 1rem;
     }

@@ -78,20 +78,20 @@ html, body {
     letter-spacing: 0.1em;
     text-transform: uppercase;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    padding-bottom: 0.2rem; /* 建议加一点 padding，让下划线别贴着字 */
+    padding-bottom: 0.2rem; 
     z-index: 100;
     opacity: 0.8;
-    /* 💡 2. 核心：确保 transition 监听了 gap 属性 */
+
     transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); 
 }
 
 .btn-back:hover { 
     opacity: 1; 
-    gap: 1.2rem; /* 悬停时箭头被有力地向左推开 */
+    gap: 1.2rem; 
     border-bottom: 1px solid #fff;
 }
 
-/* 进阶：单独控制箭头的弹性 */
+
 .back-arrow {
     transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -118,56 +118,56 @@ html, body {
     100% { text-shadow: 0 0 30px rgba(0, 240, 255, 0.2); }
 }
 
-/* --- 3. 核心 3D 摄像机架构 --- */
+/* --- 3. 核心 3D  --- */
 .scroll-proxy {
-    /* 这个高度决定了整个页面滑动的长度。6张图 * 2000深度的间距 = 12000，加上缓冲 */
+    
     height: 12000px; 
 }
 
 .camera-viewport {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     z-index: 10;
-    perspective: 1000px; /* 【灵魂属性】定义焦距，数值越小畸变越大、速度越快 */
+    perspective: 1000px; 
     overflow: hidden;
-    pointer-events: none; /* 让鼠标事件穿透，交给 JS 处理滚动 */
+    pointer-events: none; 
 }
 
 .tunnel-scene {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    transform-style: preserve-3d; /* 开启真实 3D 空间 */
-    /* will-change 在 JS 里动态添加，防止常驻占用内存 */
+    transform-style: preserve-3d; 
+
 }
 
-/* --- 4. 隧道内的照片设定 --- */
+/* --- 4. tunnel --- */
 .tunnel-item {
     position: absolute;
     top: 50%; left: 50%;
-    /* 将每张照片放在设定的 Z 轴深度上 */
     transform: translate(-50%, -50%) translateZ(calc(var(--z) * 1px));
     width: 65vw;
     max-width: 900px;
-    opacity: 0; /* 默认不可见，由 JS 根据距离计算显隐 */
+    opacity: 0; 
     transition: opacity 0.5s ease;
+     will-change: transform, opacity, filter; /* 提前唤醒 GPU 分配显存 */
 }
 .tunnel-item.is-portrait {
-    /* 关键：对于纵置照片，我们显著减小它的宽度，这样它的高度就不会爆炸 */
-    width: 45vw; /* 原来是 65vw，这里减小为 45vw，让它看起来更精致 */
-    max-width: 600px; /* 相应地调小 max-width */
+   
+    width: 45vw; 
+    max-width: 600px; 
 }
 
 .image-wrapper {
     width: 100%; border-radius: 10px; overflow: hidden;
-    /* 基础的霓虹暗影 */
+   
     box-shadow: 0 50px 100px rgba(0,0,0,0.9); 
 }
 
 .image-wrapper img {
     width: 100%; height: auto; display: block;
-    /* 添加一点微弱的对比度和冷色调滤镜，符合赛博朋克设定 */
+    
     filter: contrast(1.1) brightness(0.9);
 }
 
-/* 霓虹背光：只有在照片极其靠近屏幕时，由 JS 加上 active 类触发爆发 */
+
 .tunnel-item.active .red-neon { box-shadow: 0 20px 150px rgba(0, 240, 255, 0.2); }
 .tunnel-item.active .cyan-neon { box-shadow: 0 20px 150px rgba(0, 240, 255, 0.3); }
 .tunnel-item.active .purple-neon { box-shadow: 0 20px 150px rgba(184, 184, 184, 0.3); }
@@ -180,21 +180,17 @@ html, body {
 .meta span { font-family: 'Playfair Display', serif; font-size: 2rem; font-style: italic; color: #fff;}
 .meta p { font-size: 0.6rem; letter-spacing: 0.3em; }
 
-/* --- 5. 手机端 (小于768px) 适配 --- */
+
 @media (max-width: 768px) {
     .tunnel-item { width: 90vw; }
     .hero-title { font-size: 3.5rem; }
     .camera-viewport {
-        perspective: 800px; /* 手机端焦距缩短，让推拉感更强烈，弥补屏幕小的问题 */
+        perspective: 800px; 
     }
     .tunnel-item.is-portrait {
-        width: 70vw; /* 减小到 70vw，给顶部和底部留出更多呼吸空间，看着更舒服 */
+        width: 70vw; 
     }
 }
 
 
 
-.tunnel-item {
-    /* ... 你原有的样式 ... */
-    will-change: transform, opacity, filter; /* 提前唤醒 GPU 分配显存 */
-}

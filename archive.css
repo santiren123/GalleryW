@@ -12,7 +12,7 @@ html, body {
     justify-content: center;
 }
 
-/* 噪点层 */
+/* noise @gemini */
 .noise-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -20,8 +20,7 @@ html, body {
     pointer-events: none;
     z-index: 10;
 }
-
-/* 返回按钮 */
+/* back */
 .btn-back {
     position: fixed;
     top: 3rem;
@@ -35,7 +34,7 @@ html, body {
 }
 .btn-back:hover { color: #fff; }
 
-/* --- 2. 文字堆栈排版 --- */
+/* --- 2. word stack --- */
 .archive-wrapper {
     text-align: center;
     z-index: 5;
@@ -48,7 +47,7 @@ html, body {
     align-items: center;
 }
 
-/* 共同样式：Manrope 的现代感 */
+/* Manrope  */
 .reveal-stack > * {
     margin: 0;
     letter-spacing: 0.5em;
@@ -58,7 +57,7 @@ html, body {
 
 /* --- 3. 亮度与权重的梯级消失 --- */
 
-/* 第一级：最亮，使用 Playfair Display 的斜体，增加文学气质 */
+
 .text-level-1 {
     font-family: 'Playfair Display', serif;
     font-style: italic;
@@ -68,7 +67,7 @@ html, body {
     margin-bottom: 1rem;
 }
 
-/* 第二级：中文 */
+
 .text-level-2 {
     font-size: 1.4rem;
     opacity: 0.7;
@@ -76,7 +75,7 @@ html, body {
     letter-spacing: 0.8em;
 }
 
-/* 后续梯级：逐渐暗淡、缩小、并加入轻微模糊 */
+
 .text-level-3 { font-size: 1.2rem; opacity: 0.6; filter: blur(0.5px); }
 .text-level-4 { font-size: 1.1rem; opacity: 0.50; filter: blur(1px); }
 .text-level-5 { font-size: 1.0rem; opacity: 0.40; filter: blur(1.3px); }
@@ -85,7 +84,7 @@ html, body {
 .text-level-8 { font-size: 0.7rem; opacity: 0.1; filter: blur(2.4px); }
 .text-level-9 { font-size: 0.6rem; opacity: 0.05; filter: blur(2.9px); }
 
-/* 入场动画：让文字像呼吸一样缓缓浮现 */
+
 @keyframes fadeInUp {
     from { transform: translateY(20px); opacity: 0; }
     to { transform: translateY(0); }

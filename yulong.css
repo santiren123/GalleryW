@@ -18,12 +18,12 @@ html, body {
 }
 
 .btn-back {
-    /* 💡 把它直接钉在屏幕左上角，无视任何父级容器的排版 */
+    
     position: fixed; 
     top: 2rem;       
     left: 2rem;      
 
-    /* 下面是你现在已经有的完美微交互代码 */
+   
     display: flex;
     align-items: center;
     gap: 0.5rem; 
@@ -36,7 +36,7 @@ html, body {
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     padding-bottom: 0.2rem;
     transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); 
-    z-index: 999; /* 确保它永远在最上层，不会被图片挡住点击 */
+    z-index: 999;
 }
 
 .btn-back:hover { 
@@ -48,7 +48,7 @@ html, body {
 .scroll-hint {
     font-size: 0.65rem; letter-spacing: 0.3em;
     color: rgba(255, 255, 255, 0.4);
-    writing-mode: vertical-rl; /* 竖排文字，增加日系画册的冷感 */
+    writing-mode: vertical-rl; 
     animation: fadePulse 3s infinite;
 }
 @keyframes fadePulse {
@@ -67,25 +67,24 @@ html, body {
     gap: 0.8rem;
     z-index: 100;
     pointer-events: none;
-    /* 极其平滑的消散动画 */
     transition: opacity 1s ease-out, filter 1s ease-out; 
 }
 
 .indicator-text {
-    font-size: 1rem; /* 极致的小 */
+    font-size: 1rem; 
     letter-spacing: 0.4em;
     color: rgba(255, 255, 255, 1);
 }
 
 .indicator-line {
-    width: 1px; /* 极细的线 */
+    width: 1px; 
     height: 40px;
     background-color: rgba(255, 255, 255, 0.1);
     overflow: hidden;
     position: relative;
 }
 
-/* 这根纯白色的线会像水滴一样不断坠落 */
+
 .line-progress {
     width: 100%;
     height: 100%;
@@ -116,7 +115,7 @@ html, body {
 .altitude-box h2 {
     font-family: 'Playfair Display', serif; font-size: 3rem;
     font-weight: 400; margin: 0; line-height: 0.8;
-    /* 极致平滑的文字切换过渡 */
+   
     transition: all 0.5s ease; 
 }
 
@@ -126,7 +125,7 @@ html, body {
     color: rgba(255, 255, 255, 0.8); margin: 0;
 }
 
-/* --- 4. 冰霜溶解核心引擎 (The Frost-Glass) --- */
+/* --- 4. The Frost-Glass --- */
 .frozen-viewport {
     position: relative; width: 100vw; height: 100vh;
 }
@@ -141,7 +140,7 @@ html, body {
     z-index: 1;
 }
 
-/* 当照片被激活时，从大雾中结像 */
+
 .slide.active {
     opacity: 1;
     filter: blur(0px) brightness(1) grayscale(0%);
@@ -150,18 +149,18 @@ html, body {
 
 .slide img {
     width: 100%; height: 100%;
-    object-fit: cover; /* 保证无论手机电脑，图片都铺满全屏 */
-    object-position: center 40%; /* 稍微偏上一点对齐，通常雪山构图中心偏上 */
+    object-fit: cover; 
+    object-position: center 40%; 
 }
 
-/* 压暗蒙版：防止纯白色的雪导致前景的白色文字看不见 */
+
 .vignette {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.4) 100%);
     z-index: 2; pointer-events: none;
 }
 
-/* --- 5. 手机端特化 --- */
+/* --- 5. 手机端特化@Gemini --- */
 @media (max-width: 768px) {
     .data-layer {
         flex-direction: column; align-items: flex-start; gap: 2rem;

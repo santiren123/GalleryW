@@ -2,18 +2,18 @@
 html, body {
     margin: 0;
     padding: 0;
-    /* 极致的纯黑，比画廊更深邃 */
+
     background-color: #050505; 
     color: #fff;
     font-family: 'Manrope', sans-serif;
-    /* 锁定页面，禁止滚动 */
+
     width: 100vw;
     height: 100dvh; 
     overflow: hidden; 
    
 }
 
-/* --- 2. 胶片噪点 (提升质感的神器) --- */
+/* --- 2. noise @gemini --- */
 .noise-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -23,7 +23,7 @@ html, body {
     z-index: 10;
 }
 
-/* --- 3. 四角坐标系布局 --- */
+/* --- 3. beijing cordinate --- */
 .coordinate-layout {
     position: relative;
     width: 100%;
@@ -37,7 +37,7 @@ html, body {
     z-index: 5;
 }
 
-/* --- 左上：品牌标识 --- */
+/* --- left -  will --- */
 .top-left { top: 2.5rem; left: 2.5rem; }
 
 .name-brand {
@@ -55,7 +55,7 @@ html, body {
     margin-top: 0.5rem;
 }
 
-/* --- 4. 视觉中心：错位巨幕字体 --- */
+/* --- 4. bigwords --- */
 .center-title {
     position: absolute;
     top: 50%; left: 15%;
@@ -67,11 +67,11 @@ html, body {
     /* 防止巨型字体挡住四角的点击 */
     pointer-events: none; 
 }
-/* --- 暗房显影宣言样式 --- */
+/* --- manifes --- */
 .manifesto-container {
     position: absolute;
     left: 30%;
-    bottom: 80%; /* 位于页面中下方 */
+    bottom: 80%; 
     transform: translateX(-50%);
     text-align: center;
     width: 80%;
@@ -87,7 +87,7 @@ html, body {
     /* 核心效果：初始失焦 */
     filter: blur(8px);
     transition: filter 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), color 1.2s ease;
-    cursor: none; /* 确保使用自定义取景器 */
+    cursor: none; 
 }
 
 /* 当鼠标悬停（合焦）时 */
@@ -110,7 +110,7 @@ html, body {
     color: rgba(255, 255, 255, 0.5);
 }
 
-/* 适配移动端：默认清晰，因为没有悬停交互 */
+/* 适配移动端：默认清晰，因为没有悬停交互@gemini */
 /* 针对手机端的优化 */
 @media (max-width: 768px) {
     /* 💡 直接在手机端物理移除宣言区域 */
@@ -118,14 +118,14 @@ html, body {
         display: none !important;
     }
 
-    /* 适当微调中心大标题的位置，防止由于宣言消失导致的视觉重心失衡 */
+    
     .center-title {
-        transform: translate(-50%, -55%); /* 稍微往上移一点点 */
+        transform: translate(-50%, -55%); 
     }
 }
 .title-layer {
     font-family: 'Playfair Display', serif;
-    /* clamp：极其高级的缩放逻辑。字号会在 3rem 到 12vw 之间动态调整，绝不换行 */
+   
     font-size: clamp(3rem, 12vw, 10rem); 
     line-height: 0.75;
     white-space: nowrap;
@@ -133,15 +133,15 @@ html, body {
 
 .title-layer.back {
     color: transparent;
-    /* 镂空描边特效 */
+    
     -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15); 
-    transform: translateX(-5vw); /* 整体往左偏 */
+    transform: translateX(-5vw); 
 }
 
 .title-layer.front {
     color: #e0e0e0;
     font-style: italic;
-    transform: translateX(5vw); /* 整体往右偏，形成错落叠层 */
+    transform: translateX(5vw); 
 }
 
 /* --- 5. 左下：极客感器材清单 --- */
@@ -194,7 +194,7 @@ html, body {
 
 .enter-btn:hover {
     border-bottom: 1px solid #fff;
-    gap: 1rem; /* 悬停时箭头向右推开，极其优雅的微交互 */
+    gap: 1rem; 
 }
 
 /* --- 7. 出场动画序列 --- */
