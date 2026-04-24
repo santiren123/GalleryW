@@ -28,3 +28,7 @@ Website done!
 V2.3
 
 -added countless mini interactions
+
+V2.4
+
+Redesigned homepage

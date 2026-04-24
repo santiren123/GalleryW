@@ -120,18 +120,66 @@
                             <span class="stub-tag">BEYOND THE FOLD</span>
                             <p class="stub-text">More collections and past archives.</p>
                         </div>
-                        <a href="archive.html" class="stub-button">
-                             View 
-                            <svg viewBox="0 0 24 24" class="stub-arrow"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
-                        </a>
+                             <a href="#horizontal-trigger" 
+   class="stub-button" 
+   onclick="document.getElementById('horizontal-trigger').scrollIntoView({ behavior: 'smooth' }); return false;">
+    View 
+    <svg viewBox="0 0 24 24" class="stub-arrow"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+</a>
                     </div>
                 </div>
             </article>
+
+
+
+
+
+
+            
         </div>
     </div>
 
+
+<section class="horizontal-pivot" id="horizontal-trigger">
+    <div class="h-sticky-box">
+        <div class="h-track" id="h-track">
+            <div class="h-item">
+    <img src="images/yihe.webp" loading="lazy">
+    
+    <div class="h-overlay">
+        <div class="h-info">
+            <p class="h-tag">08/2025</p>
+            <h3>YiHeYuan</h3>
+            <span class="h-btn">Uploading...Come Back later</span>
+        </div>
+    </div>
+</div>
+
+
+
+
+            
+            <div class="h-item">
+    <img src="images/con1.webp" loading="lazy">
+    
+    <div class="h-overlay">
+        <div class="h-info">
+            <p class="h-tag">Stay Tuned Summer 2026</p>
+            <h3>XinJiang</h3>
+            <span class="h-btn">To be Continued</span>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+            </div>
+    </div>
+</section>
     <footer>
-        <p>V2.3(139) William's Photo Gallery. All Rights Reserved. &copy;2026</p>
+        <p>V2.4(155) William's Photo Gallery. All Rights Reserved. &copy;2026</p>
     </footer>
 
     <script>
@@ -238,7 +286,26 @@
         }
         animateCursor();
     </script>
+    <script>window.addEventListener('scroll', () => {
+    const trigger = document.getElementById('horizontal-trigger');
+    const track = document.getElementById('h-track');
     
+    if (!trigger || !track) return;
+
+    const rect = trigger.getBoundingClientRect();
+    
+    // 只有当横向区进入视口时才开始计算
+    if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
+        const totalScroll = trigger.offsetHeight - window.innerHeight;
+        const progress = -rect.top / totalScroll;
+        
+        // 计算位移：轨道总宽 减去 视口宽
+        const maxTranslate = track.offsetWidth - window.innerWidth * 0.9;
+        const x = progress * maxTranslate;
+        
+        track.style.transform = `translateX(-${x}px)`;
+    }
+});</script>
     <script src="transition.js"></script>
 </body>
 </html>

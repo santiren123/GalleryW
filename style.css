@@ -3,7 +3,7 @@
 
 
 :root {
-    --bg-color: #0a0a0a;       
+    --bg-color: #000000;       
     --text-main: #f5f5f5;      
     --text-muted: #c2c2c2;     
     --card-bg-1: #0a0a0a;      
@@ -165,7 +165,7 @@ body {
 }
 /* --- (The Stacking Cards) --- */
 .projects-stack {
-    padding-bottom: 30vh; 
+    padding-bottom: 20vh; 
     display: flex;
     flex-direction: column;
     gap: 80px; /* 滚动前卡片之间的间距 */
@@ -175,7 +175,7 @@ body {
     /* 核心 CSS 魔法：吸顶效果 */
     position: sticky;
     transition: filter 0.7s ease, box-shadow 0.7s ease, transform 1s ease;
-    filter: brightness(0.7);
+    filter: brightness(0.8);
     height: 75vh;
     border-radius: 32px;
     padding: 3rem;
@@ -464,8 +464,11 @@ footer {
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     padding-bottom: 0.2rem;
     transition: all 0.3s ease;
+    
 }
-
+html {
+    scroll-behavior: smooth;
+}
 .stub-button:hover {
     gap: 1rem;
     border-bottom-color: #fff;
@@ -650,5 +653,117 @@ a, button, .project-card {
     }
     body {
         cursor: auto !important;
+    }
+}
+
+/* 垂直区：确保高度足够让 5 张卡片叠完 */
+.vertical-wrap {
+    position: relative;
+    height: 450vh; /* 这里的倍数决定了 5 张卡片停留的总时长 */
+}
+
+/* 横向转轴区：作为新的一层出现 */
+.horizontal-pivot {
+    position: relative;
+    height: 400vh; /* 滚动 4 屏的距离来划完横向卡片 */
+    background: #000;
+    z-index: 10; /* 确保它能盖在/推走前面的内容 */
+}
+
+.h-sticky-box {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.h-track {
+    display: flex;
+    gap: 5vw;
+    padding: 0 10vw;
+    will-change: transform;
+}
+
+/* --- 🎯 修复：横向卡片内容集成 --- */
+
+.h-item {
+    flex-shrink: 0;
+    width: 70vw; /* 电脑端宽度 */
+    height: 78vh;
+    position: relative; /* 必须为 relative，让内部文字绝对定位 */
+    overflow: hidden;
+    background: #000;
+    border-radius: 32px;
+    box-shadow: 0 0 45px rgba(255, 255, 255, 0.3);
+    filter: brightness(1.05); 
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 遮罩层：从下往上的渐变，确保白字清晰 */
+.h-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+    display: flex;
+    align-items: flex-end; /* 文字靠底部对齐 */
+    padding: 4rem; /* 留出呼吸感边距 */
+    box-sizing: border-box;
+    
+}
+
+.h-info {
+    width: 100%;
+}
+
+/* 标签文字（类似卡片顶部的 25Q2） */
+.h-tag {
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+/* 核心标题：变大，使用 Playfair Display */
+.h-info h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 4vw, 4.5rem); /* 响应式字体大小 */
+    font-weight: 400;
+    color: #fff;
+    margin-bottom: 2rem;
+    line-height: 1;
+}
+
+/* 伪按钮（装饰用或实际链接） */
+.h-btn {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 5px;
+    color: #fff;
+}
+
+/* 手机端适配：按照你的要求，卡片变窄，文字缩小 */
+@media (max-width: 768px) {
+    .h-item {
+        width: 70vw; /* 稍微窄一点，露下一张 */
+        height: 60vh;
+    }
+    .h-overlay {
+        padding: 2rem; /* 缩小边距 */
+    }
+    .h-info h3 {
+        font-size: 2rem; /* 手机端标题调小 */
+    }
+    .h-tag {
+        font-size: 0.6rem;
     }
 }
