@@ -144,9 +144,8 @@
     <div class="h-sticky-box">
         <div class="h-track" id="h-track">
             <div class="h-item">
-    <img src="images/yihe.webp" loading="lazy">
-    
-    <div class="h-overlay">
+               <img src="images/yihe.webp" loading="lazy">
+                     <div class="h-overlay">
         <div class="h-info">
             <p class="h-tag">08/2025</p>
             <h3>YiHeYuan</h3>
@@ -154,8 +153,6 @@
         </div>
     </div>
 </div>
-
-
 
 
             
@@ -168,16 +165,26 @@
             <h3>XinJiang</h3>
             <span class="h-btn">To be Continued</span>
         </div>
+
+
+
     </div>
 </div>
-
-
-
-
-
-            </div>
+<div class="h-progress-container" id="h-progress-area">
+    <div class="h-scroll-hint" id="h-scroll-hint">
+        <span>SWIPE</span> <span class="arrow-jump">→</span>
+    </div>
+    
+    <div class="h-progress-track">
+        <div class="h-progress-bar" id="h-progress-bar"></div>
+    </div>
+</div>
+ </div>
     </div>
 </section>
+
+
+
     <footer>
         <p>V2.4(155) William's Photo Gallery. All Rights Reserved. &copy;2026</p>
     </footer>
@@ -289,64 +296,100 @@
     <script>
 const track = document.getElementById('h-track');
 const trigger = document.getElementById('horizontal-trigger');
+const progressBar = document.getElementById('h-progress-bar');
+const progressArea = document.getElementById('h-progress-area');
+const scrollHint = document.getElementById('h-scroll-hint');
 
-// ==========================================
-// 1. 电脑端：力学分流 (0.8 阻尼)
-// ==========================================
+let isDragging = false;
+
+// --- 🎯 A. 进度同步与引导消失 ---
+track.addEventListener('scroll', () => {
+    if (!isDragging) { // 拖拽时不由 scroll 事件更新，防止冲突
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        const ratio = track.scrollLeft / maxScroll;
+        progressBar.style.width = `${ratio * 100}%`;
+    }
+
+    if (track.scrollLeft > 50 && scrollHint) {
+        scrollHint.style.opacity = '0';
+    }
+});
+
+// --- 🎯 B. 拖拽逻辑引擎 (复活点) ---
+const performDrag = (clientX) => {
+    const rect = progressArea.getBoundingClientRect();
+    let ratio = (clientX - rect.left) / rect.width;
+    ratio = Math.max(0, Math.min(1, ratio));
+    
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    track.scrollLeft = ratio * maxScroll;
+    progressBar.style.width = `${ratio * 100}%`;
+};
+
+// 鼠标处理
+progressArea.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    performDrag(e.clientX);
+});
+
+// 触摸处理
+progressArea.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    performDrag(e.touches[0].clientX);
+}, { passive: false });
+
+// 全局监听移动，确保手指划出进度条也能继续拖
+window.addEventListener('mousemove', (e) => { if (isDragging) performDrag(e.clientX); });
+window.addEventListener('touchmove', (e) => { 
+    if (isDragging) {
+        performDrag(e.touches[0].clientX);
+        if (e.cancelable) e.preventDefault(); // 拖拽时锁死屏幕
+    }
+}, { passive: false });
+
+window.addEventListener('mouseup', () => isDragging = false);
+window.addEventListener('touchend', () => isDragging = false);
+
+
+// --- 🎯 C. 电脑端滚轮转横移 ---
 window.addEventListener('wheel', (e) => {
-    // 自动检测意图：如果用户已经在横划触控板，JS 不干预
-    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    if (window.innerWidth > 768) {
+        const rect = trigger.getBoundingClientRect();
+        if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
+            const maxScroll = track.scrollWidth - track.clientWidth;
+            const isAtEnd = track.scrollLeft >= maxScroll - 10;
+            const isAtStart = track.scrollLeft <= 10;
 
-    const rect = trigger.getBoundingClientRect();
-    // 只有当横滚区进入视口顶端时才开始接管
-    if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
-        
-        const isAtEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 10;
-        const isAtStart = track.scrollLeft <= 10;
-
-        if ((e.deltaY > 0 && !isAtEnd) || (e.deltaY < 0 && !isAtStart)) {
-            // 🔒 锁死垂直，借力横移
-            e.preventDefault();
-            track.scrollLeft += e.deltaY * 0.8;
+            if ((e.deltaY > 0 && !isAtEnd) || (e.deltaY < 0 && !isAtStart)) {
+                e.preventDefault();
+                track.scrollLeft += e.deltaY * 0.8;
+            }
         }
     }
 }, { passive: false });
 
-// ==========================================
-// 2. 手机端：青海 Delta 逻辑 (1:1 增量)
-// ==========================================
-let startY = 0;
 
-window.addEventListener('touchstart', (e) => {
-    // 只要在这一屏触摸，就记录起点
-    if (trigger.contains(e.target)) {
-        startY = e.touches[0].clientY;
-    }
-}, { passive: true });
+// --- 🎯 D. 手机端垂直锁死 ---
+let lastY = 0;
+window.addEventListener('touchstart', (e) => { lastY = e.touches[0].clientY; }, { passive: true });
 
 window.addEventListener('touchmove', (e) => {
-    const rect = trigger.getBoundingClientRect();
-
-    // 🎯 手机端模糊判定：进入 sticky 区域
-    if (rect.top <= 10 && rect.bottom >= window.innerHeight) {
-        const currentY = e.touches[0].clientY;
-        const diffY = startY - currentY;
-        
-        const isAtEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 10;
-        const isAtStart = track.scrollLeft <= 10;
-
-        // 如果图片还没划完
-        if ((diffY > 0 && !isAtEnd) || (diffY < 0 && !isAtStart)) {
-            // 🛑 核心拦截：不让它跳到 footer
-            if (e.cancelable) e.preventDefault();
+    if (window.innerWidth <= 768 && !isDragging) { // 拖拽时不触发此逻辑
+        const rect = trigger.getBoundingClientRect();
+        if (rect.top <= 10 && rect.bottom >= window.innerHeight) {
+            const diffY = lastY - e.touches[0].clientY;
+            const maxScroll = track.scrollWidth - track.clientWidth;
             
-            // 借用垂直位移
-            track.scrollLeft += diffY * 1.5; 
-            startY = currentY; 
+            const isAtEnd = track.scrollLeft >= maxScroll - 5;
+            const isAtStart = track.scrollLeft <= 5;
+
+            if ((diffY > 0 && !isAtEnd) || (diffY < 0 && !isAtStart)) {
+                if (e.cancelable) e.preventDefault();
+            }
         }
     }
 }, { passive: false });
-
+// 进度条点击/拖拽逻辑保持不变...
 </script>
     <script src="transition.js"></script>
 </body>

@@ -661,13 +661,13 @@ a, button, .project-card {
 /* 垂直区：确保高度足够让 5 张卡片叠完 */
 .vertical-wrap {
     position: relative;
-    height: 450vh; /* 这里的倍数决定了 5 张卡片停留的总时长 */
+    height: 400vh; /* 这里的倍数决定了 5 张卡片停留的总时长 */
 }
 
 /* 横向转轴区：作为新的一层出现 */
 .horizontal-pivot {
     position: relative;
-    height: 300vh; /* 滚动 4 屏的距离来划完横向卡片 */
+    height: 290vh; /* 滚动 4 屏的距离来划完横向卡片 */
     background: #000;
     z-index: 100; /* 确保它能盖在/推走前面的内容 */
 }
@@ -775,8 +775,11 @@ a, button, .project-card {
 /* 手机端适配：按照你的要求，卡片变窄，文字缩小 */
 @media (max-width: 768px) {
     .h-item {
-        width: 105vw; /* 稍微窄一点，露下一张 */
-        height: 75vh;
+        flex-shrink: 0;
+    width: 75vw;
+    height: 75vh; /* 从之前的 80+vh 降到 75vh，腾出 5vh 的空间 */
+    position: relative;
+    border-radius: 32px;
     }
     .h-overlay {
         position: absolute;
@@ -806,4 +809,86 @@ a, button, .project-card {
         font-size: 0.6rem;
     }
 }
+}
+
+/* 1. 轨道开启原生横滑，但隐藏丑陋的系统滚动条 */
+/* 1. 进度条容器：增加点击区域，方便拖拽 */
+.h-item {
+    flex-shrink: 0;
+    width: 75vw;
+    height: 70vh; /* 进一步压缩高度，腾出空间 */
+    border-radius: 32px;
+}
+
+.h-progress-container {
+    position: absolute;
+    bottom: 4vh; /* 离底部更近，离卡片更远 */
+    left: 15vw;
+    width: 70vw;
+    height: 50px; /* 🎯 极大的感应热区，确保不会点歪 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 1000; /* 🎯 确保在最顶层，不被任何卡片残影遮挡 */
+    cursor: pointer;
+    touch-action: none; /* 🎯 关键：告诉浏览器这个区域禁止系统默认手势，交给 JS */
+}
+
+.h-progress-track {
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    position: relative;
+    pointer-events: none; /* 让点击穿透到 container */
+}
+
+.h-progress-bar {
+    width: 0%;
+    height: 100%;
+    background: #fff;
+    position: absolute;
+}
+
+.h-progress-bar::after {
+    content: '';
+    position: absolute;
+    right: -5px;
+    top: -4px;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 15px #fff;
+}
+
+/* 2. 引导小箭头：跳动动画 */
+.h-scroll-hint {
+    font-family: 'Manrope', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: #fff;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    transition: opacity 0.5s ease; /* 消失时的淡出效果 */
+}
+
+.arrow-jump {
+    margin-left: 8px;
+    display: inline-block;
+    animation: jump-right 1.2s infinite;
+}
+
+@keyframes jump-right {
+    0%, 20%, 50%, 80%, 100% { transform: translateX(0); }
+    40% { transform: translateX(10px); }
+    60% { transform: translateX(5px); }
+}
+@media (max-width: 768px) {
+    .h-item {
+        height: 65vh; /* 手机端卡片再缩短一点，视觉重心更稳 */
+    }
+    .h-progress-container {
+        bottom: 5vh; /* 手机端稍微往上提一点点，防止撞到系统手势条 */
+    }
 }
