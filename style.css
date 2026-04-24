@@ -182,7 +182,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1.5px solid rgba(230, 230, 230, 0.1);
     box-shadow: 0 -20px 40px rgba(0, 0, 0, 0.6);
     transform-origin: top center;
     overflow: hidden;
@@ -704,7 +704,7 @@ a, button, .project-card {
     border-radius: 32px;
     box-shadow: 0 0 45px rgba(255, 255, 255, 0.0);
     filter: brightness(1.05); 
-    border: 1px solid rgb(74, 74, 74);
+    border: 2px solid rgba(207, 207, 207, 0.1);
     background-repeat:no-repeat;
     transform:translateZ(0);
     background-clip:padding-box;
