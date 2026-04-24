@@ -692,6 +692,11 @@ a, button, .project-card {
     overflow-x: auto; 
     -webkit-overflow-scrolling: touch; /* 保证手机端顺滑 */
     scrollbar-width: none; /* Firefox 隐藏滚动条 */
+    overscroll-behavior-x: contain;
+}
+
+.h-track::-webkit-scrollbar {
+    display: none;
 }
 
 /* --- 🎯 修复：横向卡片内容集成 --- */
@@ -699,7 +704,7 @@ a, button, .project-card {
 .h-item {
     flex-shrink: 0;
     width: 75vw; /* 电脑端宽度 */
-    height: 83vh;
+    height: 70vh;
     position: relative; /* 必须为 relative，让内部文字绝对定位 */
     overflow: hidden;
     background: #000;
@@ -774,13 +779,17 @@ a, button, .project-card {
 
 /* 手机端适配：按照你的要求，卡片变窄，文字缩小 */
 @media (max-width: 768px) {
-    .h-item {
-        flex-shrink: 0;
-    width: 75vw;
-    height: 75vh; /* 从之前的 80+vh 降到 75vh，腾出 5vh 的空间 */
-    position: relative;
-    border-radius: 32px;
+    .horizontal-pivot {
+        height: 180vh;
     }
+
+    .h-item {
+        width: 75vw;
+        height: 65vh;
+        position: relative;
+        border-radius: 32px;
+    }
+
     .h-overlay {
         position: absolute;
         top: 0;
@@ -800,26 +809,21 @@ a, button, .project-card {
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;    /* 宽度撑满 */
-        height: 100%;   /* 高度撑满 */
-        
-        /* 🎯 这行是灵魂：裁切多余部分，保证图片不变形且填满容器 */
+        width: 100%;
+        height: 100%;
         object-fit: cover;
+    }
+
     .h-tag {
         font-size: 0.6rem;
     }
-}
+
+    .h-progress-container {
+        bottom: 5vh;
+    }
 }
 
-/* 1. 轨道开启原生横滑，但隐藏丑陋的系统滚动条 */
 /* 1. 进度条容器：增加点击区域，方便拖拽 */
-.h-item {
-    flex-shrink: 0;
-    width: 75vw;
-    height: 70vh; /* 进一步压缩高度，腾出空间 */
-    border-radius: 32px;
-}
-
 .h-progress-container {
     position: absolute;
     bottom: 4vh; /* 离底部更近，离卡片更远 */
@@ -883,12 +887,4 @@ a, button, .project-card {
     0%, 20%, 50%, 80%, 100% { transform: translateX(0); }
     40% { transform: translateX(10px); }
     60% { transform: translateX(5px); }
-}
-@media (max-width: 768px) {
-    .h-item {
-        height: 65vh; /* 手机端卡片再缩短一点，视觉重心更稳 */
-    }
-    .h-progress-container {
-        bottom: 5vh; /* 手机端稍微往上提一点点，防止撞到系统手势条 */
-    }
 }

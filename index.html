@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>William's Gallery</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1058">
+    <link rel="stylesheet" href="style.css?v=1060">
     <link rel="icon" type="image/png" href="images/favicon.png">
     
     <style>
@@ -170,9 +170,9 @@
 
     </div>
 </div>
-<div class="h-progress-container" id="h-progress-area">
-    <div class="h-scroll-hint" id="h-scroll-hint">
-        <span>SWIPE</span> <span class="arrow-jump">→</span>
+    <div class="h-progress-container" id="h-progress-area">
+        <div class="h-scroll-hint" id="h-scroll-hint">
+        <span>SWIPE / SCROLL</span> <span class="arrow-jump">→</span>
     </div>
     
     <div class="h-progress-track">
@@ -301,95 +301,141 @@ const progressArea = document.getElementById('h-progress-area');
 const scrollHint = document.getElementById('h-scroll-hint');
 
 let isDragging = false;
+let lastTouchX = 0;
+let lastTouchY = 0;
 
-// --- 🎯 A. 进度同步与引导消失 ---
-track.addEventListener('scroll', () => {
-    if (!isDragging) { // 拖拽时不由 scroll 事件更新，防止冲突
-        const maxScroll = track.scrollWidth - track.clientWidth;
-        const ratio = track.scrollLeft / maxScroll;
-        progressBar.style.width = `${ratio * 100}%`;
+const getMaxScroll = () => Math.max(0, track.scrollWidth - track.clientWidth);
+
+const syncProgress = () => {
+    const maxScroll = getMaxScroll();
+    const ratio = maxScroll ? track.scrollLeft / maxScroll : 0;
+
+    progressBar.style.width = `${ratio * 100}%`;
+
+    if (scrollHint) {
+        scrollHint.style.opacity = track.scrollLeft > 50 ? '0' : '1';
+    }
+};
+
+const isHorizontalSectionPinned = () => {
+    const rect = trigger.getBoundingClientRect();
+    return rect.top <= 10 && rect.bottom >= window.innerHeight - 10;
+};
+
+const nudgeTrack = (delta) => {
+    if (!delta) {
+        return false;
     }
 
-    if (track.scrollLeft > 50 && scrollHint) {
-        scrollHint.style.opacity = '0';
+    const maxScroll = getMaxScroll();
+    if (!maxScroll) {
+        return false;
     }
-});
 
-// --- 🎯 B. 拖拽逻辑引擎 (复活点) ---
+    const nextScroll = Math.max(0, Math.min(maxScroll, track.scrollLeft + delta));
+    const didMove = nextScroll !== track.scrollLeft;
+
+    if (didMove) {
+        track.scrollLeft = nextScroll;
+        syncProgress();
+    }
+
+    return didMove;
+};
+
+track.addEventListener('scroll', syncProgress, { passive: true });
+window.addEventListener('resize', syncProgress);
+
+// --- 🎯 A. 进度条拖拽 ---
 const performDrag = (clientX) => {
     const rect = progressArea.getBoundingClientRect();
     let ratio = (clientX - rect.left) / rect.width;
     ratio = Math.max(0, Math.min(1, ratio));
-    
-    const maxScroll = track.scrollWidth - track.clientWidth;
-    track.scrollLeft = ratio * maxScroll;
-    progressBar.style.width = `${ratio * 100}%`;
+
+    track.scrollLeft = ratio * getMaxScroll();
+    syncProgress();
 };
 
-// 鼠标处理
 progressArea.addEventListener('mousedown', (e) => {
     isDragging = true;
     performDrag(e.clientX);
 });
 
-// 触摸处理
 progressArea.addEventListener('touchstart', (e) => {
     isDragging = true;
     performDrag(e.touches[0].clientX);
 }, { passive: false });
 
-// 全局监听移动，确保手指划出进度条也能继续拖
-window.addEventListener('mousemove', (e) => { if (isDragging) performDrag(e.clientX); });
-window.addEventListener('touchmove', (e) => { 
+window.addEventListener('mousemove', (e) => {
     if (isDragging) {
-        performDrag(e.touches[0].clientX);
-        if (e.cancelable) e.preventDefault(); // 拖拽时锁死屏幕
+        performDrag(e.clientX);
     }
-}, { passive: false });
-
-window.addEventListener('mouseup', () => isDragging = false);
-window.addEventListener('touchend', () => isDragging = false);
-
-
-// --- 🎯 C. 电脑端滚轮转横移 ---
-window.addEventListener('wheel', (e) => {
-    if (window.innerWidth > 768) {
-        const rect = trigger.getBoundingClientRect();
-        if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
-            const maxScroll = track.scrollWidth - track.clientWidth;
-            const isAtEnd = track.scrollLeft >= maxScroll - 10;
-            const isAtStart = track.scrollLeft <= 10;
-
-            if ((e.deltaY > 0 && !isAtEnd) || (e.deltaY < 0 && !isAtStart)) {
-                e.preventDefault();
-                track.scrollLeft += e.deltaY * 0.8;
-            }
-        }
-    }
-}, { passive: false });
-
-
-// --- 🎯 D. 手机端垂直锁死 ---
-let lastY = 0;
-window.addEventListener('touchstart', (e) => { lastY = e.touches[0].clientY; }, { passive: true });
+});
 
 window.addEventListener('touchmove', (e) => {
-    if (window.innerWidth <= 768 && !isDragging) { // 拖拽时不触发此逻辑
-        const rect = trigger.getBoundingClientRect();
-        if (rect.top <= 10 && rect.bottom >= window.innerHeight) {
-            const diffY = lastY - e.touches[0].clientY;
-            const maxScroll = track.scrollWidth - track.clientWidth;
-            
-            const isAtEnd = track.scrollLeft >= maxScroll - 5;
-            const isAtStart = track.scrollLeft <= 5;
-
-            if ((diffY > 0 && !isAtEnd) || (diffY < 0 && !isAtStart)) {
-                if (e.cancelable) e.preventDefault();
-            }
+    if (isDragging) {
+        performDrag(e.touches[0].clientX);
+        if (e.cancelable) {
+            e.preventDefault();
         }
     }
 }, { passive: false });
-// 进度条点击/拖拽逻辑保持不变...
+
+window.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+window.addEventListener('touchend', () => {
+    isDragging = false;
+});
+
+window.addEventListener('touchcancel', () => {
+    isDragging = false;
+});
+
+// --- 🎯 B. 电脑端：滚轮继续映射横移，同时保留原生横向滚动 ---
+window.addEventListener('wheel', (e) => {
+    if (window.innerWidth <= 768 || !isHorizontalSectionPinned()) {
+        return;
+    }
+
+    const consumed = nudgeTrack(e.deltaY * 0.8);
+    if (consumed && e.cancelable) {
+        e.preventDefault();
+    }
+}, { passive: false });
+
+// --- 🎯 C. 手机端：上下或左右滑动，都驱动横向轨道 ---
+window.addEventListener('touchstart', (e) => {
+    if (!e.touches.length) {
+        return;
+    }
+
+    lastTouchX = e.touches[0].clientX;
+    lastTouchY = e.touches[0].clientY;
+}, { passive: true });
+
+window.addEventListener('touchmove', (e) => {
+    if (window.innerWidth > 768 || isDragging || !isHorizontalSectionPinned() || !e.touches.length) {
+        return;
+    }
+
+    const touch = e.touches[0];
+    const diffX = lastTouchX - touch.clientX;
+    const diffY = lastTouchY - touch.clientY;
+
+    lastTouchX = touch.clientX;
+    lastTouchY = touch.clientY;
+
+    const gestureDelta = Math.abs(diffX) > Math.abs(diffY) ? diffX : diffY;
+    const consumed = nudgeTrack(gestureDelta);
+
+    if (consumed && e.cancelable) {
+        e.preventDefault();
+    }
+}, { passive: false });
+
+syncProgress();
 </script>
     <script src="transition.js"></script>
 </body>
