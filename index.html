@@ -287,82 +287,65 @@
         animateCursor();
     </script>
     <script>
-// main.js
-
 const track = document.getElementById('h-track');
 const trigger = document.getElementById('horizontal-trigger');
 
 // ==========================================
-// 1. 电脑端：鼠标滚轮 / 触控板逻辑 (全屏捕获)
+// 1. 电脑端：力学分流 (0.8 阻尼)
 // ==========================================
-// 🎯 注意：监听挂在 trigger 上，确保只要在这一屏，滑哪都管用
-trigger.addEventListener('wheel', (event) => {
-    // 青海逻辑：如果是横划（deltaX较大），直接放权给系统
-    if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+window.addEventListener('wheel', (e) => {
+    // 自动检测意图：如果用户已经在横划触控板，JS 不干预
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
 
     const rect = trigger.getBoundingClientRect();
-    // 判断是否进入 Sticky 激活区
-    const isAtStickyPoint = rect.top <= 0 && rect.bottom >= window.innerHeight;
-
-    if (isAtStickyPoint && event.deltaY !== 0) {
-        // 判定边界（留 10px 余量提高容错）
+    // 只有当横滚区进入视口顶端时才开始接管
+    if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
+        
         const isAtEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 10;
         const isAtStart = track.scrollLeft <= 10;
-        const scrollingDown = event.deltaY > 0;
-        const scrollingUp = event.deltaY < 0;
 
-        // 核心：还没滑到底/到头时，拦截垂直滚动，转为横向
-        if ((scrollingDown && !isAtEnd) || (scrollingUp && !isAtStart)) {
-            event.preventDefault(); 
-            // 🎯 借力：垂直力 -> 横向 scrollLeft
-            track.scrollLeft += event.deltaY * 0.8;
+        if ((e.deltaY > 0 && !isAtEnd) || (e.deltaY < 0 && !isAtStart)) {
+            // 🔒 锁死垂直，借力横移
+            e.preventDefault();
+            track.scrollLeft += e.deltaY * 0.8;
         }
     }
 }, { passive: false });
 
 // ==========================================
-// 2. 手机端：触控逻辑 (完美复刻青海算法)
+// 2. 手机端：青海 Delta 逻辑 (1:1 增量)
 // ==========================================
 let startY = 0;
-let startX = 0;
-let isSwipingHorizontal = null;
 
-// 🎯 监听挂在 trigger，保证手感
-trigger.addEventListener('touchstart', (e) => {
-    startY = e.touches[0].clientY;
-    startX = e.touches[0].clientX;
-    isSwipingHorizontal = null;
+window.addEventListener('touchstart', (e) => {
+    // 只要在这一屏触摸，就记录起点
+    if (trigger.contains(e.target)) {
+        startY = e.touches[0].clientY;
+    }
 }, { passive: true });
 
-trigger.addEventListener('touchmove', (e) => {
-    const currentY = e.touches[0].clientY;
-    const currentX = e.touches[0].clientX;
-    const diffY = startY - currentY;
-    const diffX = startX - currentX;
-
-    if (isSwipingHorizontal === null) {
-        isSwipingHorizontal = Math.abs(diffX) > Math.abs(diffY);
-    }
-
-    // 🎯 横划意图：还给系统原生滑动
-    if (isSwipingHorizontal) return;
-
+window.addEventListener('touchmove', (e) => {
     const rect = trigger.getBoundingClientRect();
-    if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
-        // 判定是否有横移空间
-        const canScrollRight = diffY > 0 && track.scrollLeft < (track.scrollWidth - track.clientWidth - 5);
-        const canScrollLeft = diffY < 0 && track.scrollLeft > 5;
 
-        if (canScrollRight || canScrollLeft) {
-            // 🎯 注意：手机端如果完全不写 preventDefault，页面会抖动
-            // 建议在“带路”时拦截，能让横转更稳
-            if (e.cancelable) e.preventDefault(); 
+    // 🎯 手机端模糊判定：进入 sticky 区域
+    if (rect.top <= 10 && rect.bottom >= window.innerHeight) {
+        const currentY = e.touches[0].clientY;
+        const diffY = startY - currentY;
+        
+        const isAtEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 10;
+        const isAtStart = track.scrollLeft <= 10;
+
+        // 如果图片还没划完
+        if ((diffY > 0 && !isAtEnd) || (diffY < 0 && !isAtStart)) {
+            // 🛑 核心拦截：不让它跳到 footer
+            if (e.cancelable) e.preventDefault();
             
-            track.scrollLeft += diffY * 1.2; // 手机端可以稍微灵敏点
+            // 借用垂直位移
+            track.scrollLeft += diffY * 1.5; 
             startY = currentY; 
         }
     }
-}, { passive: false }); // 🎯 必须为 false 才能执行 preventDefault
+}, { passive: false });
 
 </script>
     <script src="transition.js"></script>

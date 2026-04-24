@@ -166,6 +166,8 @@ body {
 /* --- (The Stacking Cards) --- */
 .projects-stack {
     padding-bottom: 20vh; 
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     gap: 80px; /* 滚动前卡片之间的间距 */
@@ -667,7 +669,7 @@ a, button, .project-card {
     position: relative;
     height: 300vh; /* 滚动 4 屏的距离来划完横向卡片 */
     background: #000;
-    z-index: 10; /* 确保它能盖在/推走前面的内容 */
+    z-index: 100; /* 确保它能盖在/推走前面的内容 */
 }
 
 .h-sticky-box {
