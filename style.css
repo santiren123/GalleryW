@@ -318,7 +318,7 @@ body::before {
 .project-card.is-active .card-content h2 {
     letter-spacing: 0em; 
     opacity: 1;
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.7); 
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.2); 
 }
 
 .project-card .card-content p {
