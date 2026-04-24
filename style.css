@@ -667,7 +667,7 @@ a, button, .project-card {
 /* 横向转轴区：作为新的一层出现 */
 .horizontal-pivot {
     position: relative;
-    height: 290vh; /* 滚动 4 屏的距离来划完横向卡片 */
+    height: 200vh; /* 初始兜底高度，真实长度由 JS 按轨道宽度动态计算 */
     background: #000;
     z-index: 100; /* 确保它能盖在/推走前面的内容 */
 }
@@ -688,11 +688,14 @@ a, button, .project-card {
     padding: 0 12vw;
     width: 100vw; /* 🎯 必须有固定宽度 */
     
-    /* 🎯 核心修复：开启原生横向滚动权限，但隐藏滚动条 */
+    /* 🎯 保留轨道原生横滑，纵向则交给整页滚动 */
     overflow-x: auto; 
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch; /* 保证手机端顺滑 */
     scrollbar-width: none; /* Firefox 隐藏滚动条 */
     overscroll-behavior-x: contain;
+    scroll-behavior: auto;
+    touch-action: pan-x pan-y;
 }
 
 .h-track::-webkit-scrollbar {
@@ -779,10 +782,6 @@ a, button, .project-card {
 
 /* 手机端适配：按照你的要求，卡片变窄，文字缩小 */
 @media (max-width: 768px) {
-    .horizontal-pivot {
-        height: 180vh;
-    }
-
     .h-item {
         width: 75vw;
         height: 65vh;

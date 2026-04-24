@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>William's Gallery</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1060">
+    <link rel="stylesheet" href="style.css?v=1061">
     <link rel="icon" type="image/png" href="images/favicon.png">
     
     <style>
@@ -300,142 +300,165 @@ const progressBar = document.getElementById('h-progress-bar');
 const progressArea = document.getElementById('h-progress-area');
 const scrollHint = document.getElementById('h-scroll-hint');
 
-let isDragging = false;
-let lastTouchX = 0;
-let lastTouchY = 0;
+const horizontalState = {
+    isDraggingProgress: false,
+    activePointerId: null,
+    syncingFromPage: false,
+    syncingFromTrack: false,
+    pageRafId: 0
+};
 
-const getMaxScroll = () => Math.max(0, track.scrollWidth - track.clientWidth);
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
-const syncProgress = () => {
-    const maxScroll = getMaxScroll();
-    const ratio = maxScroll ? track.scrollLeft / maxScroll : 0;
+const scrollPageInstant = (top) => {
+    const root = document.documentElement;
+    const previousBehavior = root.style.scrollBehavior;
 
-    progressBar.style.width = `${ratio * 100}%`;
+    root.style.scrollBehavior = 'auto';
+    window.scrollTo(0, top);
+    root.style.scrollBehavior = previousBehavior;
+};
+
+const getMetrics = () => {
+    const maxTrackScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+    const sectionSpan = Math.max(1, maxTrackScroll);
+    const sectionStart = trigger.getBoundingClientRect().top + window.scrollY;
+
+    return {
+        maxTrackScroll,
+        sectionSpan,
+        sectionStart
+    };
+};
+
+const syncProgress = (ratio = null) => {
+    const { maxTrackScroll } = getMetrics();
+    const safeRatio = ratio === null
+        ? (maxTrackScroll ? track.scrollLeft / maxTrackScroll : 0)
+        : ratio;
+
+    progressBar.style.width = `${safeRatio * 100}%`;
 
     if (scrollHint) {
-        scrollHint.style.opacity = track.scrollLeft > 50 ? '0' : '1';
+        scrollHint.style.opacity = safeRatio > 0.06 ? '0' : '1';
     }
 };
 
-const isHorizontalSectionPinned = () => {
-    const rect = trigger.getBoundingClientRect();
-    return rect.top <= 10 && rect.bottom >= window.innerHeight - 10;
+const refreshHorizontalScene = () => {
+    const { sectionSpan } = getMetrics();
+    trigger.style.height = `${Math.ceil(window.innerHeight + sectionSpan)}px`;
+    syncFromPage();
 };
 
-const nudgeTrack = (delta) => {
-    if (!delta) {
-        return false;
-    }
-
-    const maxScroll = getMaxScroll();
-    if (!maxScroll) {
-        return false;
-    }
-
-    const nextScroll = Math.max(0, Math.min(maxScroll, track.scrollLeft + delta));
-    const didMove = nextScroll !== track.scrollLeft;
-
-    if (didMove) {
-        track.scrollLeft = nextScroll;
-        syncProgress();
-    }
-
-    return didMove;
+const getPageProgress = () => {
+    const { sectionSpan, sectionStart } = getMetrics();
+    return clamp((window.scrollY - sectionStart) / sectionSpan, 0, 1);
 };
 
-track.addEventListener('scroll', syncProgress, { passive: true });
-window.addEventListener('resize', syncProgress);
+const jumpToProgress = (ratio) => {
+    const clampedRatio = clamp(ratio, 0, 1);
+    const { maxTrackScroll, sectionSpan, sectionStart } = getMetrics();
+    const nextLeft = clampedRatio * maxTrackScroll;
+    const nextTop = sectionStart + clampedRatio * sectionSpan;
 
-// --- 🎯 A. 进度条拖拽 ---
-const performDrag = (clientX) => {
+    horizontalState.syncingFromTrack = true;
+    track.scrollLeft = nextLeft;
+    scrollPageInstant(nextTop);
+    syncProgress(clampedRatio);
+
+    requestAnimationFrame(() => {
+        horizontalState.syncingFromTrack = false;
+    });
+};
+
+const syncFromPage = () => {
+    if (horizontalState.isDraggingProgress || horizontalState.syncingFromTrack) {
+        return;
+    }
+
+    const { maxTrackScroll } = getMetrics();
+    const ratio = getPageProgress();
+    const nextLeft = ratio * maxTrackScroll;
+
+    horizontalState.syncingFromPage = true;
+    track.scrollLeft = nextLeft;
+    syncProgress(ratio);
+
+    requestAnimationFrame(() => {
+        horizontalState.syncingFromPage = false;
+    });
+};
+
+const requestPageSync = () => {
+    if (horizontalState.pageRafId) {
+        return;
+    }
+
+    horizontalState.pageRafId = window.requestAnimationFrame(() => {
+        horizontalState.pageRafId = 0;
+        syncFromPage();
+    });
+};
+
+const performProgressDrag = (clientX) => {
     const rect = progressArea.getBoundingClientRect();
-    let ratio = (clientX - rect.left) / rect.width;
-    ratio = Math.max(0, Math.min(1, ratio));
-
-    track.scrollLeft = ratio * getMaxScroll();
-    syncProgress();
+    const ratio = clamp((clientX - rect.left) / rect.width, 0, 1);
+    jumpToProgress(ratio);
 };
 
-progressArea.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    performDrag(e.clientX);
-});
-
-progressArea.addEventListener('touchstart', (e) => {
-    isDragging = true;
-    performDrag(e.touches[0].clientX);
-}, { passive: false });
-
-window.addEventListener('mousemove', (e) => {
-    if (isDragging) {
-        performDrag(e.clientX);
-    }
-});
-
-window.addEventListener('touchmove', (e) => {
-    if (isDragging) {
-        performDrag(e.touches[0].clientX);
-        if (e.cancelable) {
-            e.preventDefault();
-        }
-    }
-}, { passive: false });
-
-window.addEventListener('mouseup', () => {
-    isDragging = false;
-});
-
-window.addEventListener('touchend', () => {
-    isDragging = false;
-});
-
-window.addEventListener('touchcancel', () => {
-    isDragging = false;
-});
-
-// --- 🎯 B. 电脑端：滚轮继续映射横移，同时保留原生横向滚动 ---
-window.addEventListener('wheel', (e) => {
-    if (window.innerWidth <= 768 || !isHorizontalSectionPinned()) {
+track.addEventListener('scroll', () => {
+    if (horizontalState.isDraggingProgress) {
         return;
     }
 
-    const consumed = nudgeTrack(e.deltaY * 0.8);
-    if (consumed && e.cancelable) {
-        e.preventDefault();
-    }
-}, { passive: false });
+    const { maxTrackScroll, sectionSpan, sectionStart } = getMetrics();
+    const ratio = maxTrackScroll ? track.scrollLeft / maxTrackScroll : 0;
 
-// --- 🎯 C. 手机端：上下或左右滑动，都驱动横向轨道 ---
-window.addEventListener('touchstart', (e) => {
-    if (!e.touches.length) {
+    syncProgress(ratio);
+
+    if (horizontalState.syncingFromPage) {
         return;
     }
 
-    lastTouchX = e.touches[0].clientX;
-    lastTouchY = e.touches[0].clientY;
+    horizontalState.syncingFromTrack = true;
+    scrollPageInstant(sectionStart + ratio * sectionSpan);
+
+    requestAnimationFrame(() => {
+        horizontalState.syncingFromTrack = false;
+    });
 }, { passive: true });
 
-window.addEventListener('touchmove', (e) => {
-    if (window.innerWidth > 768 || isDragging || !isHorizontalSectionPinned() || !e.touches.length) {
+window.addEventListener('scroll', requestPageSync, { passive: true });
+window.addEventListener('resize', refreshHorizontalScene);
+window.addEventListener('load', refreshHorizontalScene);
+
+progressArea.addEventListener('pointerdown', (e) => {
+    horizontalState.isDraggingProgress = true;
+    horizontalState.activePointerId = e.pointerId;
+    performProgressDrag(e.clientX);
+});
+
+window.addEventListener('pointermove', (e) => {
+    if (!horizontalState.isDraggingProgress || e.pointerId !== horizontalState.activePointerId) {
         return;
     }
 
-    const touch = e.touches[0];
-    const diffX = lastTouchX - touch.clientX;
-    const diffY = lastTouchY - touch.clientY;
+    performProgressDrag(e.clientX);
+});
 
-    lastTouchX = touch.clientX;
-    lastTouchY = touch.clientY;
-
-    const gestureDelta = Math.abs(diffX) > Math.abs(diffY) ? diffX : diffY;
-    const consumed = nudgeTrack(gestureDelta);
-
-    if (consumed && e.cancelable) {
-        e.preventDefault();
+const stopProgressDrag = (e) => {
+    if (horizontalState.activePointerId !== null && e.pointerId !== horizontalState.activePointerId) {
+        return;
     }
-}, { passive: false });
 
-syncProgress();
+    horizontalState.isDraggingProgress = false;
+    horizontalState.activePointerId = null;
+};
+
+window.addEventListener('pointerup', stopProgressDrag);
+window.addEventListener('pointercancel', stopProgressDrag);
+
+refreshHorizontalScene();
 </script>
     <script src="transition.js"></script>
 </body>
