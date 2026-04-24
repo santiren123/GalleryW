@@ -665,7 +665,7 @@ a, button, .project-card {
 /* 横向转轴区：作为新的一层出现 */
 .horizontal-pivot {
     position: relative;
-    height: 170vw; /* 滚动 4 屏的距离来划完横向卡片 */
+    height: 250vh; /* 滚动 4 屏的距离来划完横向卡片 */
     background: #000;
     z-index: 10; /* 确保它能盖在/推走前面的内容 */
 }
@@ -683,7 +683,7 @@ a, button, .project-card {
 .h-track {
     display: flex;
     gap: 9.5vw;
-    padding: 0 10vw;
+    padding: 0 12vw;
     width: 100vw; /* 🎯 必须有固定宽度 */
     
     /* 🎯 核心修复：开启原生横向滚动权限，但隐藏滚动条 */
