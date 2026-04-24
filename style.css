@@ -665,7 +665,7 @@ a, button, .project-card {
 /* 横向转轴区：作为新的一层出现 */
 .horizontal-pivot {
     position: relative;
-    height: 400vh; /* 滚动 4 屏的距离来划完横向卡片 */
+    height: 170vw; /* 滚动 4 屏的距离来划完横向卡片 */
     background: #000;
     z-index: 10; /* 确保它能盖在/推走前面的内容 */
 }
