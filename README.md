@@ -28,3 +28,7 @@ Website done!
 V2.3
 
 -added countless mini interactions
+
+Apr 23 V2.4 
+
+- Redesigned main page scroll. Algorithum

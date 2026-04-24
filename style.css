@@ -264,7 +264,36 @@ body {
     flex-direction: column;
     justify-content: space-between;
 }
+/* --- 全站胶片噪点 (Grain Overlay) --- */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    /* 指向一张极细微的噪点图，或者用 SVG 滤镜生成 */
+    background: url('https://grainy-gradients.vercel.app/noise.svg');
+    opacity: 0.04; /* 极度克制，似有还无 */
+    pointer-events: none;
+    z-index: 99999;
+    mix-blend-mode: overlay;
+}
 
+/* --- 卡片光学暗角 (Vignette) --- */
+.project-card::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: radial-gradient(circle at center, transparent 30%, rgba(3, 3, 5, 0.4) 100%);
+    pointer-events: none;
+    z-index: 2;
+    transition: opacity 0.8s ease;
+}
+
+/* 仅在卡片激活时，暗角微微加深，产生“聚焦”感 */
+.project-card.is-active::after {
+    opacity: 0.7;
+}
 /* --- innner cards --- */
 .card-header {
     display: flex;
@@ -278,6 +307,30 @@ body {
     color: var(--text-muted);
 }
 
+ /* --- 视差图层配置 (修正版) --- */
+.project-card .card-content h2 {
+    will-change: transform, letter-spacing;
+    /* 🚨 删掉了 transform，绝不能让 CSS 干扰 JS 的高频滚动渲染 */
+    transition: letter-spacing 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                opacity 0.8s ease; 
+}
+
+.project-card.is-active .card-content h2 {
+    letter-spacing: 0em; 
+    opacity: 1;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.7); 
+}
+
+.project-card .card-content p {
+    /* 🚨 同样删掉 transform 的 transition */
+    transition: opacity 0.8s ease;
+    opacity: 0.4;
+    will-change: transform;
+}
+
+.project-card.is-active .card-content p {
+    opacity: 0.8;
+}
 .card-content h2 {
     font-size: 3rem;
     font-weight: 800;
@@ -402,7 +455,7 @@ footer {
 .stub-button {
     text-decoration: none;
     color: #fff;
-    font-size: 0.7rem;
+    font-size: 0.85rem;
     letter-spacing: 0.1em;
     font-weight: 600;
     display: flex;
@@ -493,7 +546,17 @@ footer {
 body {
     cursor: none; /* 全局隐藏原生光标 */
 }
+/* 确保所有卡片里的文字区块具有纯粹的块级物理属性 */
+.project-card .card-content h2,
+.project-card .card-content p {
+    display: block;
+    margin: 0; /* 消除 margin 塌陷带来的干扰 */
+}
 
+/* 根据你之前的排版，如果去掉 margin 让 p 贴得太近，可以用 padding 顶开 */
+.project-card .card-content p {
+    padding-top: 0.5rem; 
+}
 /* 所有的交互元素都要加这个类，或者在 JS 中全局处理 */
 a, button, .project-card {
     cursor: none;
