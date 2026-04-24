@@ -294,13 +294,23 @@
 
     const rect = trigger.getBoundingClientRect();
     
-    // 只有当横向区进入视口时才开始计算
     if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
-        const totalScroll = trigger.offsetHeight - window.innerHeight;
-        const progress = -rect.top / totalScroll;
+        const totalScrollable = trigger.offsetHeight - window.innerHeight;
         
-        // 计算位移：轨道总宽 减去 视口宽
-        const maxTranslate = track.offsetWidth - window.innerWidth * 0.9;
+        // 1. 基础进度 (0-1)
+        let progress = -rect.top / totalScrollable;
+
+        // 🎯 2. 手机端“加速算法”
+        if (window.innerWidth < 768) {
+            // 使用幂函数（Power Function）让滚动在开始时更有爆发力，或者简单加倍
+            // 简单加倍法：progress = progress * 1.2; 
+            // 或者通过调整逻辑，让它提前一点完成位移
+            progress = Math.pow(progress, 0.8); // 这里的 0.8 会让进度在前期跑得更快
+        }
+        
+        progress = Math.max(0, Math.min(1, progress));
+
+        const maxTranslate = track.offsetWidth - window.innerWidth * 0.85;
         const x = progress * maxTranslate;
         
         track.style.transform = `translateX(-${x}px)`;

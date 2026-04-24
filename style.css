@@ -682,7 +682,7 @@ a, button, .project-card {
 
 .h-track {
     display: flex;
-    gap: 5vw;
+    gap: 9.5vw;
     padding: 0 10vw;
     will-change: transform;
 }
@@ -691,8 +691,8 @@ a, button, .project-card {
 
 .h-item {
     flex-shrink: 0;
-    width: 70vw; /* 电脑端宽度 */
-    height: 78vh;
+    width: 75vw; /* 电脑端宽度 */
+    height: 85vh;
     position: relative; /* 必须为 relative，让内部文字绝对定位 */
     overflow: hidden;
     background: #000;
@@ -700,6 +700,20 @@ a, button, .project-card {
     box-shadow: 0 0 45px rgba(255, 255, 255, 0.3);
     filter: brightness(1.05); 
     border: 1px solid rgba(255, 255, 255, 0.05);
+    background-repeat:no-repeat;
+    transform:translateZ(0);
+    background-clip:padding-box;
+}
+.h-item img {
+    width: 100%;
+    /* 🎯 关键 1：高度必须设为 100%，跟随卡片高度变化 */
+    height: 100%; 
+    
+    /* 🎯 关键 2：确保图片不被拉伸变形，而是裁切填充 */
+    object-fit: cover; 
+    
+    /* 消除图片底部的微小空隙（行内元素遗留问题） */
+    display: block; 
 }
 
 /* 遮罩层：从下往上的渐变，确保白字清晰 */
@@ -754,16 +768,35 @@ a, button, .project-card {
 /* 手机端适配：按照你的要求，卡片变窄，文字缩小 */
 @media (max-width: 768px) {
     .h-item {
-        width: 70vw; /* 稍微窄一点，露下一张 */
-        height: 60vh;
+        width: 105vw; /* 稍微窄一点，露下一张 */
+        height: 75vh;
     }
     .h-overlay {
-        padding: 2rem; /* 缩小边距 */
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        padding: 2.5rem 1.5rem; /* 手机端边距调小点 */
+        display: flex;
+        align-items: flex-end;
+        background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%);
     }
     .h-info h3 {
-        font-size: 2rem; /* 手机端标题调小 */
+        font-size: 2.2rem; /* 调整标题大小，确保不换行太多次 */
+        margin-bottom: 1rem;
     }
+    .h-item img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;    /* 宽度撑满 */
+        height: 100%;   /* 高度撑满 */
+        
+        /* 🎯 这行是灵魂：裁切多余部分，保证图片不变形且填满容器 */
+        object-fit: cover;
     .h-tag {
         font-size: 0.6rem;
     }
+}
 }
