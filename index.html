@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>William's Gallery</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1038">
+    <link rel="stylesheet" href="style.css?v=1040">
     <link rel="icon" type="image/png" href="images/favicon.png">
     
     <style>
@@ -286,36 +286,64 @@
         }
         animateCursor();
     </script>
-    <script>window.addEventListener('scroll', () => {
-    const trigger = document.getElementById('horizontal-trigger');
-    const track = document.getElementById('h-track');
-    
-    if (!trigger || !track) return;
+    <script>// main.js
 
+const track = document.getElementById('h-track');
+const trigger = document.getElementById('horizontal-trigger');
+
+let currentX = 0; // 当前横向位移
+let startY = 0;
+
+// 🎯 我们不用 scroll 事件，改用你熟悉的 Touch 事件（针对手机端提速）
+trigger.addEventListener('touchstart', (e) => {
+    startY = e.touches[0].clientY;
+}, { passive: true });
+
+trigger.addEventListener('touchmove', (e) => {
+    const rect = trigger.getBoundingClientRect();
+    
+    // 只有当这一屏卡在顶部（Sticky 激活）时，才执行横转逻辑
+    if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
+        const moveY = startY - e.touches[0].clientY;
+        
+        // 🎯 核心：这就是你想要的逻辑，直接相加！
+        // 这里的 1.5 是灵敏度系数，你觉得慢了就调成 2.5
+        currentX -= moveY * 1.5; 
+
+        // 边界处理：防止划过头
+        const maxMove = -(track.offsetWidth - window.innerWidth * 0.8);
+        if (currentX > 0) currentX = 0;
+        if (currentX < maxMove) currentX = maxMove;
+
+        // 应用位移
+        track.style.transform = `translateX(${currentX}px)`;
+        
+        startY = e.touches[0].clientY; // 更新起始点
+    }
+}, { passive: true });
+
+// 🎯 电脑端同理，监听 wheel 事件
+window.addEventListener('wheel', (e) => {
     const rect = trigger.getBoundingClientRect();
     
     if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
-        const totalScrollable = trigger.offsetHeight - window.innerHeight;
+        // 如果轨道还没滑到底，就阻止默认滚动，强制横滑
+        const maxMove = -(track.offsetWidth - window.innerWidth * 0.8);
         
-        // 1. 基础进度 (0-1)
-        let progress = -rect.top / totalScrollable;
+        if ((e.deltaY > 0 && currentX > maxMove) || (e.deltaY < 0 && currentX < 0)) {
+            currentX -= e.deltaY;
+            
+            // 再次确保边界
+            if (currentX > 0) currentX = 0;
+            if (currentX < maxMove) currentX = maxMove;
 
-        // 🎯 2. 手机端“加速算法”
-        if (window.innerWidth < 768) {
-            // 使用幂函数（Power Function）让滚动在开始时更有爆发力，或者简单加倍
-            // 简单加倍法：progress = progress * 1.2; 
-            // 或者通过调整逻辑，让它提前一点完成位移
-            progress = Math.pow(progress, 0.8); // 这里的 0.8 会让进度在前期跑得更快
+            track.style.transform = `translateX(${currentX}px)`;
+            
+            // 如果你想让用户滑完之前“锁死”在这一屏，可以取消下面注释
+            // e.preventDefault(); 
         }
-        
-        progress = Math.max(0, Math.min(1, progress));
-
-        const maxTranslate = track.offsetWidth - window.innerWidth * 0.85;
-        const x = progress * maxTranslate;
-        
-        track.style.transform = `translateX(-${x}px)`;
     }
-});</script>
+}, { passive: false });</script>
     <script src="transition.js"></script>
 </body>
 </html>

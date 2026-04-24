@@ -685,6 +685,7 @@ a, button, .project-card {
     gap: 9.5vw;
     padding: 0 10vw;
     will-change: transform;
+    transform: translateX(0px);
 }
 
 /* --- 🎯 修复：横向卡片内容集成 --- */
@@ -692,7 +693,7 @@ a, button, .project-card {
 .h-item {
     flex-shrink: 0;
     width: 75vw; /* 电脑端宽度 */
-    height: 85vh;
+    height: 83vh;
     position: relative; /* 必须为 relative，让内部文字绝对定位 */
     overflow: hidden;
     background: #000;
