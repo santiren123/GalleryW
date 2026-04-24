@@ -684,8 +684,12 @@ a, button, .project-card {
     display: flex;
     gap: 9.5vw;
     padding: 0 10vw;
-    will-change: transform;
-    transform: translateX(0px);
+    width: 100vw; /* 🎯 必须有固定宽度 */
+    
+    /* 🎯 核心修复：开启原生横向滚动权限，但隐藏滚动条 */
+    overflow-x: auto; 
+    -webkit-overflow-scrolling: touch; /* 保证手机端顺滑 */
+    scrollbar-width: none; /* Firefox 隐藏滚动条 */
 }
 
 /* --- 🎯 修复：横向卡片内容集成 --- */
@@ -698,9 +702,9 @@ a, button, .project-card {
     overflow: hidden;
     background: #000;
     border-radius: 32px;
-    box-shadow: 0 0 45px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 45px rgba(255, 255, 255, 0.0);
     filter: brightness(1.05); 
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgb(74, 74, 74);
     background-repeat:no-repeat;
     transform:translateZ(0);
     background-clip:padding-box;

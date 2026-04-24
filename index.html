@@ -286,74 +286,85 @@
         }
         animateCursor();
     </script>
-    <script>// main.js
-
+    <script>
 // main.js
 
 const track = document.getElementById('h-track');
 const trigger = document.getElementById('horizontal-trigger');
 
-let currentX = 0; // 记录当前的横向位移
+// ==========================================
+// 1. 电脑端：鼠标滚轮 / 触控板逻辑 (全屏捕获)
+// ==========================================
+// 🎯 注意：监听挂在 trigger 上，确保只要在这一屏，滑哪都管用
+trigger.addEventListener('wheel', (event) => {
+    // 青海逻辑：如果是横划（deltaX较大），直接放权给系统
+    if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+
+    const rect = trigger.getBoundingClientRect();
+    // 判断是否进入 Sticky 激活区
+    const isAtStickyPoint = rect.top <= 0 && rect.bottom >= window.innerHeight;
+
+    if (isAtStickyPoint && event.deltaY !== 0) {
+        // 判定边界（留 10px 余量提高容错）
+        const isAtEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 10;
+        const isAtStart = track.scrollLeft <= 10;
+        const scrollingDown = event.deltaY > 0;
+        const scrollingUp = event.deltaY < 0;
+
+        // 核心：还没滑到底/到头时，拦截垂直滚动，转为横向
+        if ((scrollingDown && !isAtEnd) || (scrollingUp && !isAtStart)) {
+            event.preventDefault(); 
+            // 🎯 借力：垂直力 -> 横向 scrollLeft
+            track.scrollLeft += event.deltaY * 0.8;
+        }
+    }
+}, { passive: false });
+
+// ==========================================
+// 2. 手机端：触控逻辑 (完美复刻青海算法)
+// ==========================================
 let startY = 0;
-let isLocked = false; // 是否锁死页面专门进行横滚
+let startX = 0;
+let isSwipingHorizontal = null;
 
-// 计算最大位移（负值）
-const getMaxMove = () => -(track.offsetWidth - window.innerWidth * 0.9);
-
-// --- 📱 手机端：青海特辑同款 Touch 逻辑 ---
+// 🎯 监听挂在 trigger，保证手感
 trigger.addEventListener('touchstart', (e) => {
     startY = e.touches[0].clientY;
-}, { passive: false });
+    startX = e.touches[0].clientX;
+    isSwipingHorizontal = null;
+}, { passive: true });
 
 trigger.addEventListener('touchmove', (e) => {
-    const rect = trigger.getBoundingClientRect();
-    const maxMove = getMaxMove();
-    
-    // 🎯 触发点：只要容器顶到了屏幕上方（Sticky 激活）
-    if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
-        const currentY = e.touches[0].clientY;
-        const diffY = startY - currentY; // 划动的垂直距离
+    const currentY = e.touches[0].clientY;
+    const currentX = e.touches[0].clientX;
+    const diffY = startY - currentY;
+    const diffX = startX - currentX;
 
-        // 🎯 逻辑开关：如果还没滑到底，或者正在往回划
-        if ((diffY > 0 && currentX > maxMove) || (diffY < 0 && currentX < 0)) {
-            
-            // 🔒 锁死原生滚动：这是解决“划不动”的关键！
+    if (isSwipingHorizontal === null) {
+        isSwipingHorizontal = Math.abs(diffX) > Math.abs(diffY);
+    }
+
+    // 🎯 横划意图：还给系统原生滑动
+    if (isSwipingHorizontal) return;
+
+    const rect = trigger.getBoundingClientRect();
+    if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
+        // 判定是否有横移空间
+        const canScrollRight = diffY > 0 && track.scrollLeft < (track.scrollWidth - track.clientWidth - 5);
+        const canScrollLeft = diffY < 0 && track.scrollLeft > 5;
+
+        if (canScrollRight || canScrollLeft) {
+            // 🎯 注意：手机端如果完全不写 preventDefault，页面会抖动
+            // 建议在“带路”时拦截，能让横转更稳
             if (e.cancelable) e.preventDefault(); 
             
-            // 🎯 增量计算：这里 2.0 是灵敏度，你觉得慢就改成 3.0
-            currentX -= diffY * 2.0; 
-
-            // 边界约束
-            if (currentX > 0) currentX = 0;
-            if (currentX < maxMove) currentX = maxMove;
-
-            // 应用位移
-            track.style.transform = `translateX(${currentX}px)`;
-            
-            startY = currentY; // 实时更新起点，保持连贯
+            track.scrollLeft += diffY * 1.2; // 手机端可以稍微灵敏点
+            startY = currentY; 
         }
     }
-}, { passive: false });
+}, { passive: false }); // 🎯 必须为 false 才能执行 preventDefault
 
-// --- 💻 电脑端：同理 Wheel 逻辑 ---
-window.addEventListener('wheel', (e) => {
-    const rect = trigger.getBoundingClientRect();
-    const maxMove = getMaxMove();
-
-    if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
-        if ((e.deltaY > 0 && currentX > maxMove) || (e.deltaY < 0 && currentX < 0)) {
-            // 拦截滚动
-            e.preventDefault();
-            
-            currentX -= e.deltaY * 1;
-            
-            if (currentX > 0) currentX = 0;
-            if (currentX < maxMove) currentX = maxMove;
-
-            track.style.transform = `translateX(${currentX}px)`;
-        }
-    }
-}, { passive: false });</script>
+</script>
     <script src="transition.js"></script>
 </body>
 </html>
