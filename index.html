@@ -298,17 +298,25 @@ const track = document.getElementById('h-track');
 const trigger = document.getElementById('horizontal-trigger');
 const progressBar = document.getElementById('h-progress-bar');
 const progressArea = document.getElementById('h-progress-area');
+const progressTrack = progressArea.querySelector('.h-progress-track');
 const scrollHint = document.getElementById('h-scroll-hint');
+const SYNC_EPSILON = 0.5;
 
 const horizontalState = {
     isDraggingProgress: false,
     activePointerId: null,
     syncingFromPage: false,
     syncingFromTrack: false,
-    pageRafId: 0
+    pageRafId: 0,
+    lastProgressWidth: -1
 };
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+const needsSync = (current, next, epsilon = SYNC_EPSILON) => Math.abs(next - current) >= epsilon;
+const snapToDevicePixel = (value) => {
+    const dpr = window.devicePixelRatio || 1;
+    return Math.round(value * dpr) / dpr;
+};
 
 const scrollPageInstant = (top) => {
     const root = document.documentElement;
@@ -333,11 +341,15 @@ const getMetrics = () => {
 
 const syncProgress = (ratio = null) => {
     const { maxTrackScroll } = getMetrics();
-    const safeRatio = ratio === null
+    const safeRatio = clamp(ratio === null
         ? (maxTrackScroll ? track.scrollLeft / maxTrackScroll : 0)
-        : ratio;
+        : ratio, 0, 1);
+    const progressWidth = progressTrack ? safeRatio * progressTrack.clientWidth : 0;
 
-    progressBar.style.width = `${safeRatio * 100}%`;
+    if (horizontalState.lastProgressWidth < 0 || needsSync(horizontalState.lastProgressWidth, progressWidth)) {
+        progressBar.style.width = `${safeRatio * 100}%`;
+        horizontalState.lastProgressWidth = progressWidth;
+    }
 
     if (scrollHint) {
         scrollHint.style.opacity = safeRatio > 0.06 ? '0' : '1';
@@ -347,6 +359,7 @@ const syncProgress = (ratio = null) => {
 const refreshHorizontalScene = () => {
     const { sectionSpan } = getMetrics();
     trigger.style.height = `${Math.ceil(window.innerHeight + sectionSpan)}px`;
+    horizontalState.lastProgressWidth = -1;
     syncFromPage();
 };
 
@@ -358,12 +371,19 @@ const getPageProgress = () => {
 const jumpToProgress = (ratio) => {
     const clampedRatio = clamp(ratio, 0, 1);
     const { maxTrackScroll, sectionSpan, sectionStart } = getMetrics();
-    const nextLeft = clampedRatio * maxTrackScroll;
-    const nextTop = sectionStart + clampedRatio * sectionSpan;
+    const nextLeft = snapToDevicePixel(clampedRatio * maxTrackScroll);
+    const nextTop = snapToDevicePixel(sectionStart + clampedRatio * sectionSpan);
 
-    horizontalState.syncingFromTrack = true;
-    track.scrollLeft = nextLeft;
-    scrollPageInstant(nextTop);
+    if (needsSync(track.scrollLeft, nextLeft)) {
+        horizontalState.syncingFromTrack = true;
+        track.scrollLeft = nextLeft;
+    }
+
+    if (needsSync(window.scrollY, nextTop)) {
+        horizontalState.syncingFromTrack = true;
+        scrollPageInstant(nextTop);
+    }
+
     syncProgress(clampedRatio);
 
     requestAnimationFrame(() => {
@@ -378,7 +398,12 @@ const syncFromPage = () => {
 
     const { maxTrackScroll } = getMetrics();
     const ratio = getPageProgress();
-    const nextLeft = ratio * maxTrackScroll;
+    const nextLeft = snapToDevicePixel(ratio * maxTrackScroll);
+
+    if (!needsSync(track.scrollLeft, nextLeft)) {
+        syncProgress(ratio);
+        return;
+    }
 
     horizontalState.syncingFromPage = true;
     track.scrollLeft = nextLeft;
@@ -413,15 +438,16 @@ track.addEventListener('scroll', () => {
 
     const { maxTrackScroll, sectionSpan, sectionStart } = getMetrics();
     const ratio = maxTrackScroll ? track.scrollLeft / maxTrackScroll : 0;
+    const nextTop = snapToDevicePixel(sectionStart + ratio * sectionSpan);
 
     syncProgress(ratio);
 
-    if (horizontalState.syncingFromPage) {
+    if (horizontalState.syncingFromPage || !needsSync(window.scrollY, nextTop)) {
         return;
     }
 
     horizontalState.syncingFromTrack = true;
-    scrollPageInstant(sectionStart + ratio * sectionSpan);
+    scrollPageInstant(nextTop);
 
     requestAnimationFrame(() => {
         horizontalState.syncingFromTrack = false;

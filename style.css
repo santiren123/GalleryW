@@ -783,7 +783,7 @@ a, button, .project-card {
 /* 手机端适配：按照你的要求，卡片变窄，文字缩小 */
 @media (max-width: 768px) {
     .h-item {
-        width: 110vw;
+        width: 130vw;
         height: 75vh;
         position: relative;
         border-radius: 32px;
