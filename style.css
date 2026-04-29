@@ -314,7 +314,8 @@ body::before {
     will-change: transform, letter-spacing;
     /* 🚨 删掉了 transform，绝不能让 CSS 干扰 JS 的高频滚动渲染 */
     transition: letter-spacing 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), 
-                opacity 0.8s ease; 
+                opacity 0.8s ease,
+                text-shadow 0.8s ease; 
 }
 
 .project-card.is-active .card-content h2 {
@@ -373,6 +374,17 @@ footer {
 
 /* --- mobile --- */
 @media (max-width: 768px) {
+    .project-card .card-content h2 {
+        will-change: auto;
+        transition: opacity 0.45s ease, text-shadow 0.45s ease;
+        letter-spacing: -0.02em;
+    }
+
+    .project-card.is-active .card-content h2 {
+        letter-spacing: -0.02em;
+        text-shadow: 0 0 12px rgba(255, 255, 255, 0.16);
+    }
+
     /* 1. 缩小卡片内边距：上下留 2rem，左右留 1.5rem，给文字释放横向空间 */
     .project-card {
         padding: 2rem 1.5rem; 
