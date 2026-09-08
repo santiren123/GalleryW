@@ -22,19 +22,22 @@
   const MOBILE = window.innerWidth < 821;
 
   /* ============================================================
-     1 — GROUND COLOUR: night blue → glacier teal, scrubbed
-     body.theme-dark paints `var(--paper-dark)`, so driving that
-     one custom property re-tints the whole page continuously.
+     1 — GROUND COLOUR: high-altitude daylight, scrubbed
+     These photographs are almost all bright clear-sky frames, so the chapter
+     sits on a LIGHT ground — but a cool one, the mirror of the site's warm
+     paper (#f3efe7 is red-led; this is blue-led at the same lightness). That
+     keeps the flagship distinct from every other album without clashing.
+     body paints `var(--bg)`, so driving that one property re-tints the page.
      ============================================================ */
-  const GROUND_FROM = [10, 12, 17];   // #0a0c11 — the site's usual dark
-  const GROUND_TO   = [5, 22, 30];    // #05161e — glacier teal-black
+  const GROUND_FROM = [238, 243, 247];  // #eef3f7 — pale daylight
+  const GROUND_TO   = [227, 236, 243];  // #e3ecf3 — glacier tint, mid-chapter
 
   const section = document.getElementById('xinjiang');
 
-  /* This chapter owns its own dark toggle rather than using the generic
+  /* The chapter drives the ground itself rather than using the generic
      [data-theme-dark] handler in main.js. Its pinned scene adds scroll that
      the section's own box does not report, so `bottom 42%` resolved early and
-     left the tail of the chapter stranded on the light ground. Anchoring the
+     left the tail of the chapter stranded on the wrong ground. Anchoring the
      end to the next chapter is pin-proof. */
   ScrollTrigger.create({
     trigger: section, start: 'top 58%',
@@ -48,15 +51,14 @@
     // landing this scene on top of Lijiang.
     refreshPriority: -1,
     invalidateOnRefresh: true,
-    onToggle: (self) => document.body.classList.toggle('theme-dark', self.isActive),
     onUpdate: (self) => {
       // ease out and back so the tint peaks mid-chapter
       const t = Math.sin(Math.min(Math.max(self.progress, 0), 1) * Math.PI);
       const c = GROUND_FROM.map((f, i) => Math.round(f + (GROUND_TO[i] - f) * t));
-      document.body.style.setProperty('--paper-dark', `rgb(${c[0]},${c[1]},${c[2]})`);
+      document.body.style.setProperty('--bg', `rgb(${c[0]},${c[1]},${c[2]})`);
     },
-    onLeave: () => document.body.style.removeProperty('--paper-dark'),
-    onLeaveBack: () => document.body.style.removeProperty('--paper-dark'),
+    onLeave: () => document.body.style.removeProperty('--bg'),
+    onLeaveBack: () => document.body.style.removeProperty('--bg'),
   });
 
   /* ============================================================

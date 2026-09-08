@@ -18,6 +18,8 @@
 
   document.title = `WPHOT — ${album.title} · ${album.cn}`;
   if (album.dark) document.body.classList.add('theme-dark');
+  // lets an album carry its own paper colour (see body.album-xinjiang)
+  document.body.classList.add('album-' + key);
 
   /* ---------- head ---------- */
   document.getElementById('albumNo').textContent = `album ${album.no} · ${album.photos.length} photographs`;

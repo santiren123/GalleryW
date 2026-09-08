@@ -431,10 +431,25 @@ body.theme-dark .progress-bar { background: #41c9e2; }
    ground-colour shift driven via --paper-dark (see js/xinjiang.js). Only a
    handful of frames live here — the rest are kept for the album page. */
 
+/* The chapter's own paper: cool high-altitude daylight, the mirror of the
+   site's warm cream. js/xinjiang.js lerps --bg between this and a slightly
+   deeper glacier tint across the chapter; this token is the resting value,
+   also used by the album subpage (body.album-xinjiang). */
+:root { --xj-paper: #eef3f7; }
+
+/* the album subpage carries the same paper, so the flagship reads as one
+   piece from homepage chapter to album and still differs from the others */
+body.album-xinjiang { --bg: var(--xj-paper); }
+
+/* the marquee is drawn for a dark ground (cream stroke, cream hairlines) —
+   on this chapter's light paper both would vanish, so restate them in ink */
+.chapter-xj .marquee { border-top-color: var(--line); border-bottom-color: var(--line); }
+.chapter-xj .marquee-track span { -webkit-text-stroke: 1px rgba(29, 26, 22, .5); }
+
 /* --- the pinned WebGL panorama --- */
 .xj-pin {
   position: relative; height: var(--vh100); overflow: hidden;
-  background: #05070c;
+  background: var(--xj-paper);
   margin-bottom: clamp(3rem, 9vh, 6rem);
 }
 .xj-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }

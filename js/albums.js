@@ -43,7 +43,9 @@ window.ALBUMS = {
   xinjiang: {
     no: '03', cn: '新疆', title: 'Where the Light Comes Down',
     sub: 'Xinjiang — a sixth of a country, where the mountains make their own weather and the light arrives in columns.',
-    dark: true,
+    // clear-sky album — it reads on light paper, tinted cool by
+    // body.album-xinjiang so it still stands apart from the other albums
+    dark: false,
     photos: [
       { src: 'assets/img/xj1.webp',  cap: '天山日暮 — the sun files its report through the cloud', l: 'pano' },
       { src: 'assets/img/xj8.webp',  cap: 'the reservoir keeps a turquoise nobody mixed', l: 'tall' },
