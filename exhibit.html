@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>行记 · 粒子展 — Particle Exhibition</title>
+<meta name="description" content="六帧照片，拆成十五万个发光的点，再落回原处。">
+<link rel="icon" href="assets/img/favicon.png">
+<style>
+  :root{
+    --ink:#f4f1ea;
+    --dim:#8d8880;
+    --faint:#4a4640;
+    --gold:#c8a962;
+    --bg:#050505;
+    --ui: ui-sans-serif, -apple-system, "Helvetica Neue", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0; height:100%; background:var(--bg); color:var(--ink);
+    font-family:var(--ui); overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* The canvas host fills the viewport; every UI layer floats above it. */
+  #stage{ position:fixed; inset:0; z-index:0; }
+
+  /* A slow vignette keeps the eye centred on the cloud. */
+  #stage::after{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse at 50% 48%,
+      rgba(0,0,0,0) 42%, rgba(0,0,0,.55) 100%);
+  }
+
+  .layer{ position:fixed; z-index:2; pointer-events:none; }
+  .layer > *{ pointer-events:auto; }
+
+  /* ---- masthead ---- */
+  .masthead{ top:0; left:0; right:0; padding:26px 34px;
+    display:flex; align-items:flex-start; justify-content:space-between; }
+
+  .brand{ line-height:1.25; }
+  .brand b{ display:block; font-size:15px; letter-spacing:.24em; font-weight:600; }
+  .brand span{ display:block; margin-top:5px; font-size:9.5px; letter-spacing:.30em;
+    color:var(--dim); text-transform:uppercase; }
+
+  .meta{ text-align:right; font-size:9.5px; letter-spacing:.26em;
+    color:var(--dim); text-transform:uppercase; line-height:1.9; }
+  .meta em{ font-style:normal; color:var(--gold); }
+
+  /* ---- caption block ---- */
+  .caption{ left:34px; bottom:38px; max-width:min(30rem, 62vw); }
+
+  .kicker{ font-size:9.5px; letter-spacing:.32em; color:var(--gold);
+    text-transform:uppercase; margin-bottom:14px; }
+
+  .title{ font-size:clamp(2.6rem, 6.4vw, 4.6rem); font-weight:300;
+    letter-spacing:.02em; line-height:1; margin:0; }
+  .title small{ display:block; font-size:.24em; letter-spacing:.42em;
+    color:var(--dim); margin-top:16px; font-weight:400; }
+
+  .sub{ margin:18px 0 0; font-size:13px; color:var(--dim); letter-spacing:.09em; }
+  .quote{ margin:10px 0 0; font-size:15px; color:var(--ink); opacity:.82;
+    font-weight:300; letter-spacing:.01em; }
+
+  /* Caption swaps out during the burst and back in as the frame lands. */
+  .swap{ transition:opacity .42s ease, transform .42s ease; }
+  .swap.out{ opacity:0; transform:translateY(9px); }
+
+  /* ---- album rail ---- */
+  .rail{ right:34px; bottom:38px; display:flex; flex-direction:column;
+    align-items:flex-end; gap:2px; }
+
+  .rail button{
+    appearance:none; background:none; border:0; cursor:pointer;
+    color:var(--faint); font-family:inherit; font-size:10px;
+    letter-spacing:.26em; text-transform:uppercase; padding:9px 0 9px 22px;
+    display:flex; align-items:center; gap:13px;
+    transition:color .3s ease, letter-spacing .3s ease;
+  }
+  .rail button i{ font-style:normal; font-size:8.5px; opacity:.55;
+    font-variant-numeric:tabular-nums; }
+  .rail button u{ display:block; width:20px; height:1px; text-decoration:none;
+    background:currentColor; opacity:.4; transition:width .35s ease, opacity .3s ease; }
+
+  .rail button:hover{ color:var(--dim); }
+  .rail button[aria-current="true"]{ color:var(--ink); letter-spacing:.30em; }
+  .rail button[aria-current="true"] u{ width:44px; opacity:1; background:var(--gold); }
+
+  /* ---- hint + loader ---- */
+  .hint{ left:50%; bottom:34px; transform:translateX(-50%);
+    font-size:9px; letter-spacing:.30em; color:var(--faint);
+    text-transform:uppercase; transition:opacity .6s ease; }
+
+  .boot{ position:fixed; inset:0; z-index:9; background:var(--bg);
+    display:grid; place-items:center; gap:0; transition:opacity .9s ease;
+    font-size:9.5px; letter-spacing:.34em; color:var(--dim); text-transform:uppercase; }
+  .boot.gone{ opacity:0; pointer-events:none; }
+
+  .fallback{ position:fixed; inset:0; z-index:8; display:none;
+    place-items:center; text-align:center; padding:8vw;
+    background:var(--bg); color:var(--dim); font-size:13px; line-height:1.9; }
+  .fallback img{ max-width:min(560px,78vw); opacity:.6; margin-bottom:26px;
+    filter:grayscale(.3); }
+
+  @media (max-width:760px){
+    .masthead{ padding:18px 20px; }
+    .meta{ display:none; }
+    .caption{ left:20px; right:20px; bottom:96px; max-width:none; }
+    .rail{ right:0; left:0; bottom:26px; flex-direction:row; justify-content:center;
+      gap:0; flex-wrap:wrap; }
+    .rail button{ padding:8px 11px; letter-spacing:.16em; font-size:9px; }
+    .rail button u{ display:none; }
+    .rail button i{ display:none; }
+    .hint{ display:none; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .swap{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stage" aria-hidden="true"></div>
+
+<header class="layer masthead">
+  <div class="brand">
+    <b>行记 · 粒子展</b>
+    <span>Particle Exhibition</span>
+  </div>
+  <div class="meta">
+    <div><em id="m-count">—</em> points</div>
+    <div id="m-tier">—</div>
+  </div>
+</header>
+
+<section class="layer caption" aria-live="polite">
+  <div class="kicker swap" id="c-kicker">Album 01 / 06</div>
+  <h1 class="title swap" id="c-title">大同<small id="c-latin">DATONG</small></h1>
+  <p class="sub swap" id="c-sub">华严 · 木构重檐</p>
+  <p class="quote swap" id="c-quote">Timber remembers patience.</p>
+</section>
+
+<nav class="layer rail" id="rail" aria-label="相册"></nav>
+
+<div class="layer hint" id="hint">Move to disturb · Click an album to reform</div>
+
+<div class="boot" id="boot">Baking light…</div>
+
+<div class="fallback" id="fallback">
+  <div>
+    <img id="fallback-img" alt="">
+    <div>你的浏览器不支持这场展览所需的 WebGL 浮点渲染。<br>
+    Your browser lacks the float-texture WebGL support this exhibit needs.</div>
+  </div>
+</div>
+
+<script src="libs/three.min.js"></script>
+<script src="libs/gsap.min.js"></script>
+<script src="js/particle-manifest.js"></script>
+<script src="js/particle-gallery.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  const albums = window.PARTICLE_ALBUMS;
+  const rail = document.getElementById('rail');
+  const boot = document.getElementById('boot');
+  const hint = document.getElementById('hint');
+
+  const el = {
+    kicker: document.getElementById('c-kicker'),
+    title: document.getElementById('c-title'),
+    latin: document.getElementById('c-latin'),
+    sub: document.getElementById('c-sub'),
+    quote: document.getElementById('c-quote'),
+    count: document.getElementById('m-count'),
+    tier: document.getElementById('m-tier'),
+  };
+
+  const swaps = [el.kicker, el.title, el.sub, el.quote];
+
+  /* Build the album rail. */
+  albums.forEach(function (a, i) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.innerHTML = '<i>' + String(i + 1).padStart(2, '0') + '</i>' +
+                  '<u></u><span>' + a.latin + '</span>';
+    b.addEventListener('click', function () { if (gallery) gallery.show(i); });
+    rail.appendChild(b);
+  });
+  const buttons = Array.prototype.slice.call(rail.querySelectorAll('button'));
+
+  function paintCaption(i) {
+    const a = albums[i];
+    el.kicker.textContent = 'Album ' + String(i + 1).padStart(2, '0') + ' / ' +
+                            String(albums.length).padStart(2, '0');
+    el.title.firstChild.nodeValue = a.title;
+    el.latin.textContent = a.latin;
+    el.sub.textContent = a.subtitle;
+    el.quote.textContent = a.caption;
+    buttons.forEach(function (b, n) { b.setAttribute('aria-current', n === i ? 'true' : 'false'); });
+  }
+
+  let gallery = null;
+
+  ParticleGallery.mount('#stage').then(function (g) {
+    gallery = g;
+    window.__pg = g;          // debug handle: __pg.sim, __pg.running, __pg.show(n)
+    paintCaption(0);
+    el.count.textContent = g.tier.count.toLocaleString();
+    el.tier.textContent = g.tier.name + ' · ' + g.tier.sim + '²';
+    boot.classList.add('gone');
+
+    // Hide the caption during the burst, bring it back as the frame lands.
+    g.on('switch', function (e) {
+      swaps.forEach(function (n) { n.classList.add('out'); });
+      setTimeout(function () {
+        paintCaption(e.to);
+        swaps.forEach(function (n) { n.classList.remove('out'); });
+      }, 430);
+    });
+
+    // Fade the hint once the visitor has explored a little.
+    let switches = 0;
+    g.on('switch', function () {
+      if (++switches >= 2) hint.style.opacity = '0';
+    });
+
+    /* Keyboard: arrows step through, digits jump. */
+    window.addEventListener('keydown', function (ev) {
+      if (ev.key === 'ArrowRight' || ev.key === 'ArrowDown') { ev.preventDefault(); g.next(); }
+      else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowUp') { ev.preventDefault(); g.prev(); }
+      else if (/^[1-6]$/.test(ev.key)) { g.show(parseInt(ev.key, 10) - 1); }
+    });
+
+    /* Wheel / swipe steps the exhibition, throttled to one move per gesture. */
+    let lock = 0;
+    window.addEventListener('wheel', function (ev) {
+      const now = Date.now();
+      if (now < lock || Math.abs(ev.deltaY) < 18) return;
+      lock = now + 1300;
+      if (ev.deltaY > 0) g.next(); else g.prev();
+    }, { passive: true });
+
+    let touchY = null;
+    window.addEventListener('touchstart', function (ev) {
+      touchY = ev.touches[0].clientY;
+    }, { passive: true });
+    window.addEventListener('touchend', function (ev) {
+      if (touchY === null) return;
+      const dy = touchY - (ev.changedTouches[0] || {}).clientY;
+      if (Math.abs(dy) > 60) { if (dy > 0) g.next(); else g.prev(); }
+      touchY = null;
+    }, { passive: true });
+
+  }).catch(function (err) {
+    console.error(err);
+    boot.classList.add('gone');
+    const fb = document.getElementById('fallback');
+    document.getElementById('fallback-img').src = albums[0].src;
+    fb.style.display = 'grid';
+  });
+})();
+</script>
+</body>
+</html>
