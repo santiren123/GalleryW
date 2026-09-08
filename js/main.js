@@ -257,6 +257,21 @@
     }
   });
 
+  /* ---------- keep trigger positions honest ----------
+     Every frame on the page reserves its box up front, so a lazy image landing
+     should not move anything. This is the safety net for the case where one
+     slips through: a late size change shifts everything below it, and pinned
+     scenes would then fire at the wrong scroll position. Debounced so a burst
+     of images costs a single recalculation. */
+  {
+    let pending;
+    const resync = () => { clearTimeout(pending); pending = setTimeout(() => ScrollTrigger.refresh(), 250); };
+    document.querySelectorAll('img[loading="lazy"]').forEach((img) => {
+      if (img.complete) return;
+      img.addEventListener('load', resync, { once: true });
+    });
+  }
+
   /* ---------- figure reveals ---------- */
   if (!REDUCED) {
     document.querySelectorAll('.ph .ph-frame, .about-photo .ph-frame').forEach((frame) => {

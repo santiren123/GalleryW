@@ -494,21 +494,28 @@ body.album-xinjiang { --bg: var(--xj-paper); }
    The cap is per shape, because a 2:3 portrait and a 2.33:1 pano need very
    different room; min(vh, rem) also keeps it sane on very large displays. */
 .xj-plate { padding: 0 var(--pad); margin: clamp(3.5rem, 10vh, 7rem) 0; }
+/* The frame's box is DEFINITE — width is resolved from the height cap and the
+   photograph's own ratio, height then follows from aspect-ratio. That matters
+   for more than tidiness: these images are lazy, and a frame that sized itself
+   from the (not yet loaded) image collapsed to the caption, then grew ~1600px
+   when the files landed. Everything below inherited a stale scroll position,
+   which is what made the Fuji scene pin a screen early. A definite box is
+   reserved before the file arrives, so nothing shifts.
+   Because the box matches the image ratio exactly, `contain` fits it edge to
+   edge — still never cropped, and with no letterbox band either. */
 .xj-plate .ph-frame {
-  display: grid; place-items: center;
-  background: none;                 /* no letterbox band around the plate */
+  aspect-ratio: var(--xj-ar);
+  width: min(100%, calc(var(--xj-cap) * var(--xj-ar)));
+  margin-inline: auto;
+  background: none;
 }
-.xj-plate img {
-  width: auto; height: auto;
-  max-width: 100%;
-  max-height: var(--xj-cap);
-  object-fit: contain;
-}
+.xj-plate img { width: 100%; height: 100%; object-fit: contain; }
 .xj-plate figcaption { justify-content: center; text-align: center; }
 
-.xj-portrait  { --xj-cap: min(84vh, 46rem); }
-.xj-landscape { --xj-cap: min(74vh, 42rem); }
-.xj-pano      { --xj-cap: min(56vh, 34rem); }
+/* --xj-ar is each plate's true ratio (w ÷ h of the source file) */
+.xj-portrait  { --xj-ar: 0.6665; --xj-cap: min(84vh, 46rem); }  /* 1833×2750 */
+.xj-landscape { --xj-ar: 1.4997; --xj-cap: min(74vh, 42rem); }  /* 2800×1867 */
+.xj-pano      { --xj-ar: 2.3339; --xj-cap: min(56vh, 34rem); }  /* 2600×1114 */
 
 /* On a portrait screen the width limit already does the work, so pull the
    height caps in — otherwise a tall frame fills the phone and the caption
